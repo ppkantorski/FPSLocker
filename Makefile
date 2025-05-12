@@ -38,13 +38,13 @@ include $(DEVKITPRO)/libnx/switch_rules
 #   NACP building is skipped as well.
 #---------------------------------------------------------------------------------
 APP_TITLE	:=	FPSLocker
-APP_VERSION	:=	2.1.1
+APP_VERSION	:=	2.1.1+
 
 TARGET		:=	FPSLocker
 BUILD		:=	build
-SOURCES		:=	source source/c4 source/c4/yml
+SOURCES		:=	source source/c4 source/c4/yml source/tinyexpr libs/libultrahand/libultra/source
 DATA		:=	data
-INCLUDES	:=	include libs/libtesla/include source
+INCLUDES	:=	include libs/libultrahand/libultra/include libs/libultrahand/libtesla/include source
 
 NO_ICON		:=  1
 
@@ -53,8 +53,16 @@ NO_ICON		:=  1
 #---------------------------------------------------------------------------------
 ARCH		:= -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 
-CFLAGS		:= -g -Wall -Os -ffunction-sections \
+CFLAGS := -g -Wall -Os -ffunction-sections -fdata-sections -flto -fomit-frame-pointer -finline-small-functions \
 			$(ARCH) $(DEFINES)
+
+# Enable appearance overriding
+UI_OVERRIDE_PATH := /config/fpslocker/
+CFLAGS += -DUI_OVERRIDE_PATH="\"$(UI_OVERRIDE_PATH)\""
+
+# Disable fstream
+NO_FSTREAM_DIRECTIVE := 1
+CFLAGS += -DNO_FSTREAM_DIRECTIVE=$(NO_FSTREAM_DIRECTIVE)
 
 CFLAGS		+= $(INCLUDE) -D__SWITCH__ -DAPP_VERSION="\"$(APP_VERSION)\"" -DNDEBUG
 
@@ -64,6 +72,7 @@ ASFLAGS		:= -g $(ARCH)
 LDFLAGS		= -specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
 LIBS		:= `curl-config --libs`
+LIBS += -lcurl -lz -lzzip -lmbedtls -lmbedx509 -lmbedcrypto -ljansson -lnx
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
