@@ -130,7 +130,7 @@ namespace tsl {
                 s32 x = 0, y = 0;
 
                 if (this->m_highlightShaking) {
-                    auto t = (std::chrono::system_clock::now() - this->m_highlightShakingStartTime);
+                    auto t = (std::chrono::steady_clock::now() - this->m_highlightShakingStartTime);
                     if (t >= 100ms)
                         this->m_highlightShaking = false;
                     else {
