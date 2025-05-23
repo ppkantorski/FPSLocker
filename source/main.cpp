@@ -2,7 +2,7 @@
 #include <tesla.hpp>    // The Tesla Header
 //#include "MiniList.hpp" // already a part of libultrahand
 #include "NoteHeader.hpp"
-#include "List.hpp"
+//#include "List.hpp" // substituted with regular ListItems (cosmetic preference)
 #include <sys/stat.h>
 #include <dirent.h>
 #include "SaltyNX.h"
