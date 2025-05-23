@@ -336,7 +336,7 @@ public:
 			}
 			return false;
 		});
-		list->addItem(clickableListItem5);		
+		list->addItem(clickableListItem5);
 
 		frame->setContent(list);
 
