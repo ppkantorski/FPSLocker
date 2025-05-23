@@ -417,7 +417,7 @@ public:
 			
 		}), 65);
 
-		auto *clickableListItem1 = new tsl::elm::ListItem2("Allowed refresh rates");
+		auto *clickableListItem1 = new tsl::elm::ListItem("Allowed refresh rates");
 		clickableListItem1->setClickListener([this](u64 keys) { 
 			if ((keys & HidNpadButton_A) && !block) {
 				tsl::changeTo<DockedManualGui>();
@@ -428,7 +428,7 @@ public:
 
 		list->addItem(clickableListItem1);
 
-		auto *clickableListItem2 = new tsl::elm::ListItem2("Refresh rate wizard");
+		auto *clickableListItem2 = new tsl::elm::ListItem("Refresh rate wizard");
 		clickableListItem2->setClickListener([this](u64 keys) { 
 			if ((keys & HidNpadButton_A) && !block) {
 				tsl::changeTo<DockedWizardGui>();
@@ -439,7 +439,7 @@ public:
 
 		list->addItem(clickableListItem2);
 
-		auto *clickableListItem3 = new tsl::elm::ListItem2("Frameskip tester");
+		auto *clickableListItem3 = new tsl::elm::ListItem("Frameskip tester");
 		clickableListItem3->setClickListener([this](u64 keys) { 
 			if ((keys & HidNpadButton_A)) {
 				tsl::changeTo<DockedFrameskipGui>();
@@ -451,7 +451,7 @@ public:
 		list->addItem(clickableListItem3);
 
 
-		auto *clickableListItem4 = new tsl::elm::ListItem2("Additional settings");
+		auto *clickableListItem4 = new tsl::elm::ListItem("Additional settings");
 		clickableListItem4->setClickListener([this](u64 keys) { 
 			if ((keys & HidNpadButton_A) && !block) {
 				tsl::changeTo<DockedAdditionalGui>();
@@ -584,7 +584,7 @@ public:
 
 		if (!displaySync) {
 			if (entry_mode == ApmPerformanceMode_Normal) {
-				auto *clickableListItem = new tsl::elm::ListItem2("Increase Refresh Rate");
+				auto *clickableListItem = new tsl::elm::ListItem("Increase Refresh Rate");
 				clickableListItem->setClickListener([this](u64 keys) { 
 					if ((keys & HidNpadButton_A) && (!isOLED || isDocked)) {
 						if ((refreshRate_g >= 40) && (refreshRate_g < 60)) {
@@ -602,7 +602,7 @@ public:
 
 				list->addItem(clickableListItem);
 
-				auto *clickableListItem2 = new tsl::elm::ListItem2("Decrease Refresh Rate");
+				auto *clickableListItem2 = new tsl::elm::ListItem("Decrease Refresh Rate");
 				clickableListItem2->setClickListener([this](u64 keys) { 
 					if ((keys & HidNpadButton_A) && (!isOLED || isDocked)) {
 						if (refreshRate_g > 40) {
@@ -621,7 +621,7 @@ public:
 				list->addItem(clickableListItem2);
 			}
 			else if (entry_mode == ApmPerformanceMode_Boost) {
-				auto *clickableListItem2 = new tsl::elm::ListItem2("Change Refresh Rate");
+				auto *clickableListItem2 = new tsl::elm::ListItem("Change Refresh Rate");
 				clickableListItem2->setClickListener([](u64 keys) { 
 					if (keys & HidNpadButton_A) {
 						tsl::changeTo<DockedRefreshRateChangeGui>();
@@ -674,7 +674,7 @@ public:
 			list->addItem(clickableListItem3);
 
 			if (!isLite) {
-				auto *clickableListItem4 = new tsl::elm::ListItem2("Docked Settings");
+				auto *clickableListItem4 = new tsl::elm::ListItem("Docked Settings");
 				clickableListItem4->setClickListener([this](u64 keys) { 
 					if ((keys & HidNpadButton_A)) {
 						tsl::changeTo<DockedGui>();
@@ -741,7 +741,7 @@ public:
 			renderer->drawString(Warning.c_str(), false, x, y+20, 20, renderer->a(0xFFFF));
 		}), 200);
 
-		auto *clickableListItem1 = new tsl::elm::ListItem2("Decline");
+		auto *clickableListItem1 = new tsl::elm::ListItem("Decline");
 		clickableListItem1->setClickListener([this](u64 keys) { 
 			if (keys & HidNpadButton_A) {
 				tsl::goBack();
@@ -752,7 +752,7 @@ public:
 
 		list->addItem(clickableListItem1);
 
-		auto *clickableListItem2 = new tsl::elm::ListItem2("Accept");
+		auto *clickableListItem2 = new tsl::elm::ListItem("Accept");
 		clickableListItem2->setClickListener([this](u64 keys) { 
 			if ((keys & HidNpadButton_A)) {
 				tsl::goBack();
