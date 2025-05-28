@@ -8,7 +8,7 @@ public:
 		auto list = new tsl::elm::List();
 		list->addItem(new tsl::elm::CategoryHeader("It will be applied on next game boot.", false));
 		list->addItem(new tsl::elm::NoteHeader("Remember to save settings after change.", true, {0xF, 0x3, 0x3, 0xF}));
-		auto *clickableListItem = new tsl::elm::ListItem2("Double");
+		auto *clickableListItem = new tsl::elm::ListItem("Double");
 		clickableListItem->setClickListener([](u64 keys) { 
 			if ((keys & HidNpadButton_A) && PluginRunning) {
 				SetBuffers_save = 2;
@@ -20,7 +20,7 @@ public:
 		list->addItem(clickableListItem);
 
 		if ((Shared -> API) == 3) {
-			auto *clickableListItemv1 = new tsl::elm::ListItem2("Triple");
+			auto *clickableListItemv1 = new tsl::elm::ListItem("Triple");
 			clickableListItemv1->setClickListener([](u64 keys) { 
 				if ((keys & HidNpadButton_A) && PluginRunning) {
 					SetBuffers_save = 3;
@@ -34,7 +34,7 @@ public:
 		}
 		else {
 			if ((Shared -> SetActiveBuffers) == 2 && (Shared -> Buffers) == 3 && !SetBuffers_save) {
-				auto *clickableListItem2 = new tsl::elm::ListItem2("Triple (force)");
+				auto *clickableListItem2 = new tsl::elm::ListItem("Triple (force)");
 				clickableListItem2->setClickListener([](u64 keys) { 
 					if ((keys & HidNpadButton_A) && PluginRunning) {
 						SetBuffers_save = 3;
@@ -46,7 +46,7 @@ public:
 				list->addItem(clickableListItem2);
 			}
 			else {
-				auto *clickableListItem2 = new tsl::elm::ListItem2("Triple");
+				auto *clickableListItem2 = new tsl::elm::ListItem("Triple");
 				clickableListItem2->setClickListener([](u64 keys) { 
 					if ((keys & HidNpadButton_A) && PluginRunning) {
 						if ((Shared -> Buffers) == 4) SetBuffers_save = 3;
@@ -61,7 +61,7 @@ public:
 			
 			if ((Shared -> Buffers) == 4) {
 				if ((Shared -> SetActiveBuffers) < 4 && (Shared -> SetActiveBuffers) > 0 && (Shared -> Buffers) == 4) {
-					auto *clickableListItem3 = new tsl::elm::ListItem2("Quadruple (force)");
+					auto *clickableListItem3 = new tsl::elm::ListItem("Quadruple (force)");
 					clickableListItem3->setClickListener([](u64 keys) { 
 						if ((keys & HidNpadButton_A) && PluginRunning) {
 							SetBuffers_save = 4;
@@ -73,7 +73,7 @@ public:
 					list->addItem(clickableListItem3);	
 				}
 				else {
-					auto *clickableListItem3 = new tsl::elm::ListItem2("Quadruple");
+					auto *clickableListItem3 = new tsl::elm::ListItem("Quadruple");
 					clickableListItem3->setClickListener([](u64 keys) { 
 						if ((keys & HidNpadButton_A) && PluginRunning) {
 							SetBuffers_save = 0;
@@ -102,7 +102,7 @@ public:
 
 		auto list = new tsl::elm::List();
 
-		auto *clickableListItem = new tsl::elm::ListItem2("Enabled");
+		auto *clickableListItem = new tsl::elm::ListItem("Enabled");
 		clickableListItem->setClickListener([](u64 keys) { 
 			if ((keys & HidNpadButton_A) && PluginRunning) {
 				ZeroSyncMode = "On";
@@ -115,7 +115,7 @@ public:
 		});
 		list->addItem(clickableListItem);
 
-		auto *clickableListItem2 = new tsl::elm::ListItem2("Semi-Enabled");
+		auto *clickableListItem2 = new tsl::elm::ListItem("Semi-Enabled");
 		clickableListItem2->setClickListener([](u64 keys) { 
 			if ((keys & HidNpadButton_A) && PluginRunning) {
 				ZeroSyncMode = "Semi";
@@ -128,7 +128,7 @@ public:
 		});
 		list->addItem(clickableListItem2);
 
-		auto *clickableListItem3 = new tsl::elm::ListItem2("Disabled");
+		auto *clickableListItem3 = new tsl::elm::ListItem("Disabled");
 		clickableListItem3->setClickListener([](u64 keys) { 
 			if ((keys & HidNpadButton_A) && PluginRunning) {
 				ZeroSyncMode = "Off";
@@ -336,7 +336,7 @@ public:
 			}
 			return false;
 		});
-		list->addItem(clickableListItem5);		
+		list->addItem(clickableListItem5);
 
 		frame->setContent(list);
 

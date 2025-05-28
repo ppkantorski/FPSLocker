@@ -1,8 +1,8 @@
 #define TESLA_INIT_IMPL // If you have more than one file using the tesla header, only define this in the main one
 #include <tesla.hpp>    // The Tesla Header
-#include "MiniList.hpp"
+//#include "MiniList.hpp" // already a part of libultrahand
 #include "NoteHeader.hpp"
-#include "List.hpp"
+//#include "List.hpp" // substituted with regular ListItems (cosmetic preference)
 #include <sys/stat.h>
 #include <dirent.h>
 #include "SaltyNX.h"
@@ -40,7 +40,7 @@ public:
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
 
-		auto *clickableListItem = new tsl::elm::ListItem2("Delete settings");
+		auto *clickableListItem = new tsl::elm::ListItem("Delete settings");
 		clickableListItem->setClickListener([this](u64 keys) { 
 			if (keys & HidNpadButton_A) {
 				char path[512] = "";
@@ -71,7 +71,7 @@ public:
 
 		list->addItem(clickableListItem);
 
-		auto *clickableListItem2 = new tsl::elm::ListItem2("Delete patches");
+		auto *clickableListItem2 = new tsl::elm::ListItem("Delete patches");
 		clickableListItem2->setClickListener([this](u64 keys) { 
 			if (keys & HidNpadButton_A) {
 				char folder[640] = "";
@@ -165,7 +165,7 @@ public:
 		if (R_FAILED(rc)) {
 			char error[24] = "";
 			sprintf(&error[0], "Err: 0x%x", rc);
-			auto *clickableListItem2 = new tsl::elm::ListItem2(error);
+			auto *clickableListItem2 = new tsl::elm::ListItem(error);
 			clickableListItem2->setClickListener([](u64 keys) { 
 				if (keys & HidNpadButton_A) {
 					return true;
@@ -176,7 +176,7 @@ public:
 			list->addItem(clickableListItem2);
 		}
 		else {
-			auto *clickableListItem3 = new tsl::elm::ListItem2("All");
+			auto *clickableListItem3 = new tsl::elm::ListItem("All");
 			clickableListItem3->setClickListener([](u64 keys) { 
 				if (keys & HidNpadButton_A) {
 					tsl::changeTo<NoGameSub>(0x1234567890ABCDEF, "Everything");
@@ -188,7 +188,7 @@ public:
 			list->addItem(clickableListItem3);
 
 			for (size_t i = 0; i < titles.size(); i++) {
-				auto *clickableListItem = new tsl::elm::ListItem2(titles[i].TitleName);
+				auto *clickableListItem = new tsl::elm::ListItem(titles[i].TitleName);
 				clickableListItem->setClickListener([i](u64 keys) { 
 					if (keys & HidNpadButton_A) {
 						tsl::changeTo<NoGameSub>(titles[i].TitleID, titles[i].TitleName);
@@ -239,7 +239,7 @@ public:
 			}
 		}), 30);
 
-		auto *clickableListItem2 = new tsl::elm::ListItem2("Games list");
+		auto *clickableListItem2 = new tsl::elm::ListItem("Games list");
 		clickableListItem2->setClickListener([this](u64 keys) { 
 			if (keys & HidNpadButton_A) {
 				tsl::changeTo<NoGame2>(this -> rc, 2, true);
@@ -250,7 +250,7 @@ public:
 
 		list->addItem(clickableListItem2);
 
-		auto *clickableListItem3 = new tsl::elm::ListItem2("Display settings", "\uE151");
+		auto *clickableListItem3 = new tsl::elm::ListItem("Display settings", "\uE151");
 		clickableListItem3->setClickListener([](u64 keys) { 
 			if (keys & HidNpadButton_A) {
 				tsl::changeTo<WarningDisplayGui>();
@@ -497,7 +497,7 @@ public:
 
 		if (PluginRunning && (Shared -> pluginActive)) {
 			if (entry_mode == ApmPerformanceMode_Normal) {
-				auto *clickableListItem = new tsl::elm::ListItem2("Increase FPS target");
+				auto *clickableListItem = new tsl::elm::ListItem("Increase FPS target");
 				clickableListItem->setClickListener([](u64 keys) { 
 					if ((keys & HidNpadButton_A) && PluginRunning) {
 						if ((Shared -> FPSmode) == 2 && !(Shared -> FPSlocked)) {
@@ -546,7 +546,7 @@ public:
 
 				list->addItem(clickableListItem);
 				
-				auto *clickableListItem2 = new tsl::elm::ListItem2("Decrease FPS target");
+				auto *clickableListItem2 = new tsl::elm::ListItem("Decrease FPS target");
 				clickableListItem2->setClickListener([](u64 keys) { 
 					if ((keys & HidNpadButton_A) && PluginRunning) {
 						if ((Shared -> FPSmode) < 2 && !(Shared -> FPSlocked)) {
@@ -595,7 +595,7 @@ public:
 				list->addItem(clickableListItem2);
 			}
 			else if (entry_mode == ApmPerformanceMode_Boost) {
-				auto *clickableListItem2 = new tsl::elm::ListItem2("Change FPS target");
+				auto *clickableListItem2 = new tsl::elm::ListItem("Change FPS target");
 				clickableListItem2->setClickListener([](u64 keys) { 
 					if ((keys & HidNpadButton_A) && PluginRunning) {
 						tsl::changeTo<DockedFPSTargetGui>();
@@ -606,7 +606,7 @@ public:
 				list->addItem(clickableListItem2);			
 			}
 
-			auto *clickableListItem4 = new tsl::elm::ListItem2("Disable custom FPS target");
+			auto *clickableListItem4 = new tsl::elm::ListItem("Disable custom FPS target");
 			clickableListItem4->setClickListener([](u64 keys) { 
 				if ((keys & HidNpadButton_A) && PluginRunning) {
 					if ((Shared -> FPSlocked)) {
@@ -625,7 +625,7 @@ public:
 			});
 			list->addItem(clickableListItem4);
 
-			auto *clickableListItem3 = new tsl::elm::ListItem2("Advanced settings");
+			auto *clickableListItem3 = new tsl::elm::ListItem("Advanced settings");
 			clickableListItem3->setClickListener([](u64 keys) { 
 				if ((keys & HidNpadButton_A) && PluginRunning) {
 					tsl::changeTo<AdvancedGui>();
@@ -635,7 +635,7 @@ public:
 			});
 			list->addItem(clickableListItem3);
 
-			auto *clickableListItem5 = new tsl::elm::ListItem2("Save settings");
+			auto *clickableListItem5 = new tsl::elm::ListItem("Save settings");
 			clickableListItem5->setClickListener([](u64 keys) { 
 				if ((keys & HidNpadButton_A) && PluginRunning) {
 					if (!(Shared -> FPSlocked) && !(Shared -> ZeroSync) && !SetBuffers_save && !forceSuspend_save) {
@@ -672,7 +672,7 @@ public:
 		}
 
 		if (SaltySD) {
-			auto *clickableListItem6 = new tsl::elm::ListItem2("Display settings", "\uE151");
+			auto *clickableListItem6 = new tsl::elm::ListItem("Display settings", "\uE151");
 			clickableListItem6->setClickListener([](u64 keys) { 
 				if (keys & HidNpadButton_A) {
 					tsl::changeTo<WarningDisplayGui>();
