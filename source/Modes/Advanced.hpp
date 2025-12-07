@@ -6,30 +6,32 @@ public:
 		auto frame = new tsl::elm::OverlayFrame(getStringID(Lang::Id_SetBuffering), " ");
 
 		auto list = new tsl::elm::List();
-		if (Shared->expectedSetBuffers == -1) list->addItem(new tsl::elm::NoteHeader(getStringID(Lang::Id_ItWillBeAppliedOnNextGameBoot), true, {0xF, 0x3, 0x3, 0xF}));
-		auto *clickableListItem = new tsl::elm::ListItem2(getStringID(Lang::Id_Double));
-		clickableListItem->setClickListener([](u64 keys) { 
+		list->disableCaching();
+
+		if (Shared->expectedSetBuffers == -1) list->addItem(new tsl::elm::CategoryHeader(getStringID(Lang::Id_ItWillBeAppliedOnNextGameBoot), true));
+		auto *clickableListItem0 = new tsl::elm::ListItem(getStringID(Lang::Id_Double));
+		clickableListItem0->setClickListener([](u64 keys) { 
 			if ((keys & HidNpadButton_A) && PluginRunning) {
 				SetBuffers_save = 2;
 				if (Shared->expectedSetBuffers != -1) Shared->expectedSetBuffers = 2;
 				saveSettings();
-				tsl::goBack();
-				tsl::goBack();
+				tsl::goBack(2);
+				//tsl::goBack();
 				return true;
 			}
 			return false;
 		});
-		list->addItem(clickableListItem);
+		list->addItem(clickableListItem0);
 
 		if ((Shared -> API) == 3) {
-			auto *clickableListItemv1 = new tsl::elm::ListItem2(getStringID(Lang::Id_Triple));
+			auto *clickableListItemv1 = new tsl::elm::ListItem(getStringID(Lang::Id_Triple));
 			clickableListItemv1->setClickListener([](u64 keys) { 
 				if ((keys & HidNpadButton_A) && PluginRunning) {
 					SetBuffers_save = 3;
 					if (Shared->expectedSetBuffers != -1) Shared->expectedSetBuffers = 3;
 					saveSettings();
-					tsl::goBack();
-					tsl::goBack();
+					tsl::goBack(2);
+					//tsl::goBack();
 					return true;
 				}
 				return false;
@@ -40,30 +42,30 @@ public:
 		else {
 			if ((Shared -> Buffers) >= 3) {
 				if ((Shared -> SetActiveBuffers) > 0) {
-				auto *clickableListItem2 = new tsl::elm::ListItem2(getStringID(Lang::Id_TripleForce));
-				clickableListItem2->setClickListener([](u64 keys) { 
+				auto *clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_TripleForce));
+				clickableListItem->setClickListener([](u64 keys) { 
 					if ((keys & HidNpadButton_A) && PluginRunning) {
 						SetBuffers_save = 3;
 						if (Shared->expectedSetBuffers != -1) Shared->expectedSetBuffers = 3;
 						saveSettings();
-						tsl::goBack();
-						tsl::goBack();
+						tsl::goBack(2);
+						//tsl::goBack();
 						return true;
 					}
 					return false;
 				});
-				list->addItem(clickableListItem2);
+				list->addItem(clickableListItem);
 				}
 				else {
-					auto *clickableListItem2 = new tsl::elm::ListItem2(getStringID(Lang::Id_Triple));
+					auto *clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_Triple));
 					clickableListItem2->setClickListener([](u64 keys) { 
 						if ((keys & HidNpadButton_A) && PluginRunning) {
 							if ((Shared -> Buffers) == 4) SetBuffers_save = 3;
 							else SetBuffers_save = 0;
 							if (Shared->expectedSetBuffers != -1) Shared->expectedSetBuffers = 3;
 							saveSettings();
-							tsl::goBack();
-							tsl::goBack();
+							tsl::goBack(2);
+							//tsl::goBack();
 							return true;
 						}
 						return false;
@@ -74,14 +76,14 @@ public:
 			
 			if ((Shared -> Buffers) == 4) {
 				if ((Shared -> SetActiveBuffers) > 0) {
-					auto *clickableListItem3 = new tsl::elm::ListItem2(getStringID(Lang::Id_QuadrupleForce));
+					auto *clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_QuadrupleForce));
 					clickableListItem3->setClickListener([](u64 keys) { 
 						if ((keys & HidNpadButton_A) && PluginRunning) {
 							SetBuffers_save = 4;
 							if (Shared->expectedSetBuffers != -1) Shared->expectedSetBuffers = 4;
 							saveSettings();
-							tsl::goBack();
-							tsl::goBack();
+							tsl::goBack(2);
+							//tsl::goBack();
 							return true;
 						}
 						return false;
@@ -89,14 +91,14 @@ public:
 					list->addItem(clickableListItem3);	
 				}
 				else {
-					auto *clickableListItem3 = new tsl::elm::ListItem2(getStringID(Lang::Id_Quadruple));
+					auto *clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_Quadruple));
 					clickableListItem3->setClickListener([](u64 keys) { 
 						if ((keys & HidNpadButton_A) && PluginRunning) {
 							SetBuffers_save = 0;
 							if (Shared->expectedSetBuffers != -1) Shared->expectedSetBuffers = 4;
 							saveSettings();
-							tsl::goBack();
-							tsl::goBack();
+							tsl::goBack(2);
+							//tsl::goBack();
 							return true;
 						}
 						return false;
@@ -120,43 +122,44 @@ public:
         auto frame = new tsl::elm::OverlayFrame(getStringID(Lang::Id_NVNWindowSyncWait), getStringID(Lang::Id_Mode));
 
 		auto list = new tsl::elm::List();
+		list->disableCaching();
 
-		auto *clickableListItem = new tsl::elm::ListItem2(getStringID(Lang::Id_Enabled));
+		auto *clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_Enabled));
 		clickableListItem->setClickListener([](u64 keys) { 
 			if ((keys & HidNpadButton_A) && PluginRunning) {
 				ZeroSyncMode = getStringID(Lang::Id_On);
 				(Shared -> ZeroSync) = 0;
 				saveSettings();
-				tsl::goBack();
-				tsl::goBack();
+				tsl::goBack(2);
+				//tsl::goBack();
 				return true;
 			}
 			return false;
 		});
 		list->addItem(clickableListItem);
 
-		auto *clickableListItem2 = new tsl::elm::ListItem2(getStringID(Lang::Id_SemiEnabled));
+		auto *clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_SemiEnabled));
 		clickableListItem2->setClickListener([](u64 keys) { 
 			if ((keys & HidNpadButton_A) && PluginRunning) {
 				ZeroSyncMode = getStringID(Lang::Id_Semi);
 				(Shared -> ZeroSync) = 2;
 				saveSettings();
-				tsl::goBack();
-				tsl::goBack();
+				tsl::goBack(2);
+				//tsl::goBack();
 				return true;
 			}
 			return false;
 		});
 		list->addItem(clickableListItem2);
 
-		auto *clickableListItem3 = new tsl::elm::ListItem2(getStringID(Lang::Id_Disabled));
+		auto *clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_Disabled));
 		clickableListItem3->setClickListener([](u64 keys) { 
 			if ((keys & HidNpadButton_A) && PluginRunning) {
 				ZeroSyncMode = getStringID(Lang::Id_Off);
 				(Shared -> ZeroSync) = 1;
 				saveSettings();
-				tsl::goBack();
-				tsl::goBack();
+				tsl::goBack(2);
+				//tsl::goBack();
 				return true;
 			}
 			return false;
@@ -226,6 +229,7 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_AdvancedSettings));
 
 		auto list = new tsl::elm::List();
+		list->disableCaching();
 
 		if ((Shared -> API)) {
 			switch((Shared -> API)) {
@@ -234,7 +238,7 @@ public:
 					
 					list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 						
-						renderer->drawString(nvnBuffers, false, x, y+20, 20, renderer->a(0xFFFF));
+						renderer->drawString(nvnBuffers, false, x, y+20, 20, (0xFFFF));
 							
 					}), 60);
 
@@ -270,7 +274,7 @@ public:
 
 					list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 						
-						renderer->drawString(nvnBuffers, false, x, y+20, 20, renderer->a(0xFFFF));
+						renderer->drawString(nvnBuffers, false, x, y+20, 20, (0xFFFF));
 							
 					}), 40);
 
@@ -292,32 +296,32 @@ public:
 		list->addItem(new tsl::elm::CategoryHeader(getStringID(Lang::Id_FPSLockerPatches), false));
 
 		if (R_FAILED(configValid)) {
-			base_height = 154;
+			base_height = 132;
 		}
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 			
 			if (R_SUCCEEDED(configValid)) {
 				
-				renderer->drawString(getStringID(Lang::Id_FoundValidConfigFile), false, x, y+20, 20, renderer->a(0xFFFF));
-				renderer->drawString(patchAppliedChar, false, x, y+40, 20, renderer->a(0xFFFF));
+				renderer->drawString(getStringID(Lang::Id_FoundValidConfigFile), false, x, y+20, 20, (0xFFFF));
+				renderer->drawString(patchAppliedChar, false, x, y+40, 20, (0xFFFF));
 				if (R_FAILED(patchValid)) {
-					renderer->drawString(patchChar, false, x, y+64, 20, renderer->a(0xF99F));
+					renderer->drawString(patchChar, false, x, y+64, 20, (0xF99F));
 				}
-				else renderer->drawString(patchChar, false, x, y+64, 20, renderer->a(0xFFFF));
+				else renderer->drawString(patchChar, false, x, y+64, 20, (0xFFFF));
 			}
 			else {
-				renderer->drawString(lockInvalid, false, x, y+20, 20, renderer->a(0xFFFF));
+				renderer->drawString(lockInvalid, false, x, y+20, 20, (0xFFFF));
 				if (patchChar[0] != 0)
-					renderer->drawString(patchChar, false, x, y+84, 20, renderer->a(0xF99F));
-				else renderer->drawString(lockVersionExpected, false, x, y+84, 20, renderer->a(0xFFFF));
+					renderer->drawString(patchChar, false, x, y+84, 20, (0xF99F));
+				else renderer->drawString(lockVersionExpected, false, x, y+84, 20, (0xFFFF));
 			}
 				
 
 		}), base_height);
 
 		if (R_SUCCEEDED(configValid)) {
-			list->addItem(new tsl::elm::NoteHeader(getStringID(Lang::Id_RememberToRebootTheGameAfterConversion), true, {0xF, 0x3, 0x3, 0xF}));
+			list->addItem(new tsl::elm::CategoryHeader(getStringID(Lang::Id_RememberToRebootTheGameAfterConversion), true));
 			auto *clickableListItem = new tsl::elm::MiniListItem(getStringID(Lang::Id_ConvertConfigToPatchFile));
 			clickableListItem->setClickListener([](u64 keys) { 
 				if ((keys & HidNpadButton_A) && PluginRunning) {
@@ -347,7 +351,7 @@ public:
 			list->addItem(clickableListItem2);
 		}
 		if (R_FAILED(configValid)) {
-			list->addItem(new tsl::elm::NoteHeader(getStringID(Lang::Id_ThisCanTakeUpTo30Seconds), true, {0xF, 0x3, 0x3, 0xF}));
+			list->addItem(new tsl::elm::CategoryHeader(getStringID(Lang::Id_ThisCanTakeUpTo30Seconds), true));
 		}
 		auto *clickableListItem4 = new tsl::elm::MiniListItem(getStringID(Lang::Id_CheckDownloadConfigFile));
 		clickableListItem4->setClickListener([this](u64 keys) { 
@@ -362,7 +366,7 @@ public:
 		});
 		list->addItem(clickableListItem4);
 
-		list->addItem(new tsl::elm::CategoryHeader(getStringID(Lang::Id_Misc), false));
+		list->addItem(new tsl::elm::CategoryHeader(getStringID(Lang::Id_Misc), true));
 
 		auto *clickableListItem5 = new tsl::elm::MiniToggleListItem(getStringID(Lang::Id_HaltUnfocusedGame), forceSuspend_save);
 		clickableListItem5->setClickListener([this](u64 keys) { 
@@ -417,6 +421,7 @@ public:
 		if (exitPossible) {
 			if (keysDown & HidNpadButton_B) {
 				tsl::goBack();
+				triggerExitFeedback();
 				return true;
 			}
 		}
@@ -475,8 +480,8 @@ public:
 					fclose(fp);
 					remove(patchPath);
 				}
-				tsl::goBack();
-				tsl::changeTo<AdvancedGui>();
+				//tsl::goBack();
+				tsl::swapTo<AdvancedGui>();
 				return true;
 			}
 			else if (rc != UINT32_MAX) {

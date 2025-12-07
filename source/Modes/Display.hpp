@@ -21,18 +21,19 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_FrameskipTester));
 
 		auto list = new tsl::elm::List();
+		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
             if (!state) {
-                renderer->drawString(getStringID(Lang::Id_HowToUseIt), false, x, y+20, 20, renderer->a(0xFFFF));
+                renderer->drawString(getStringID(Lang::Id_HowToUseIt), false, x, y+20, 20, (0xFFFF));
             }
 			else if (!block) {
 				renderer->fillScreen(0xF000);
 				renderer->drawRect(x+x_1, y+y_1, block_width, block_height, renderer->a(0xFFFF));
-				renderer->drawString(getStringID(Lang::Id_PressToExit), false, x+20, y+height+20, 20, renderer->a(0xFFFF));
+				renderer->drawString(getStringID(Lang::Id_PressToExit), false, x+20, y+height+20, 20, (0xFFFF));
 			}
 			else {
-				renderer->drawString(getStringID(Lang::Id_RenderingTakesTooLong), false, x, y+20, 20, renderer->a(0xFFFF));
+				renderer->drawString(getStringID(Lang::Id_RenderingTakesTooLong), false, x, y+20, 20, (0xFFFF));
 			}
 			
 		}), height+40);		
@@ -97,12 +98,13 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplayUnderclockWizard));
 
 		auto list = new tsl::elm::List();
+		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
-			renderer->drawString(Docked_c.c_str(), false, x, y+20, 20, renderer->a(0xFFFF));
+			renderer->drawString(Docked_c.c_str(), false, x, y+20, 20, (0xFFFF));
 
-			renderer->drawString(PressButton, false, x, y+160, 20, renderer->a(0xFFFF));
+			renderer->drawString(PressButton, false, x, y+160, 20, (0xFFFF));
 			
 		}), 200);		
 		
@@ -179,8 +181,8 @@ public:
 				}
 				SaveDockedModeAllowedSave(rr, as, height == 720);
 
-				tsl::goBack();
-				tsl::changeTo<DockedManualGui>(highestRefreshRate);
+				//tsl::goBack();
+				tsl::swapTo<DockedManualGui>(highestRefreshRate);
 				return true;
 			}
 			if (svcGetSystemTick() - tick < (15 * systemtickfrequency)) {
@@ -276,12 +278,13 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplayOverclockWizard));
 
 		auto list = new tsl::elm::List();
+		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
-			renderer->drawString(Docked_c, false, x, y+20, 20, renderer->a(0xFFFF));
+			renderer->drawString(Docked_c, false, x, y+20, 20, (0xFFFF));
 
-			renderer->drawString(PressButton, false, x, y+260, 20, renderer->a(0xFFFF));
+			renderer->drawString(PressButton, false, x, y+260, 20, (0xFFFF));
 			
 		}), 270);		
 		
@@ -447,6 +450,7 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", string_temp);
 
 		auto list = new tsl::elm::List();
+		list->disableCaching();
 
 		for (size_t i = 0; i < 4; i++) {
 			char Hz[] = "120 Hz";
@@ -527,6 +531,7 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DockedDisplayAdditionalSettings));
 
 		auto list = new tsl::elm::List();
+		list->disableCaching();
 
 		auto *clickableListItem4 = new tsl::elm::ToggleListItem(getStringID(Lang::Id_AllowPatchesToForce60Hz), !as.dontForce60InDocked);
 		clickableListItem4->setClickListener([this](u64 keys) { 
@@ -644,13 +649,14 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DockedDisplaySettings));
 
 		auto list = new tsl::elm::List();
+		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
-			renderer->drawString(Docked_c, false, x, y+20, 20, renderer->a(0xFFFF));
+			renderer->drawString(Docked_c, false, x, y+20, 20, (0xFFFF));
 			if (!block) {
-				if (linkRate < 20) renderer->drawString("\uE14C", false, x+220, y+40, 20, renderer->a(0xF00F));
-				else renderer->drawString("\uE14B", false, x+220, y+40, 20, renderer->a(0xF0F0));
+				if (linkRate < 20) renderer->drawString("\uE14C", false, x+220, y+40, 20, (0xF00F));
+				else renderer->drawString("\uE14B", false, x+220, y+40, 20, (0xF0F0));
 			}
 
 			
@@ -659,7 +665,7 @@ public:
 		if (mode == ApmPerformanceMode_Boost && (height == 720 || height == 1080)) {
 			char string_temp[128];
 			snprintf(string_temp, sizeof(string_temp), getStringID(Lang::Id_AllowedRefreshRates), height);
-			auto *clickableListItem1 = new tsl::elm::ListItem2(string_temp);
+			auto *clickableListItem1 = new tsl::elm::ListItem(string_temp);
 			clickableListItem1->setClickListener([this](u64 keys) { 
 				if ((keys & HidNpadButton_A) && !block) {
 					tsl::changeTo<DockedManualGui>(highestRefreshRate);
@@ -670,8 +676,8 @@ public:
 
 			list->addItem(clickableListItem1);
 
-			auto *clickableListItem2 = new tsl::elm::ListItem2(getStringID(Lang::Id_DisplayUnderclockWizard));
-			clickableListItem2->setClickListener([this](u64 keys) { 
+			auto *clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_DisplayUnderclockWizard));
+			clickableListItem->setClickListener([this](u64 keys) { 
 				if ((keys & HidNpadButton_A) && !block) {
 					tsl::changeTo<DockedWizardGui>(highestRefreshRate);
 					return true;
@@ -679,13 +685,13 @@ public:
 				return false;
 			});
 
-			list->addItem(clickableListItem2);
+			list->addItem(clickableListItem);
 
 			if (highestRefreshRate >= 70) {
 				char string_temp[128];
 				snprintf(string_temp, sizeof(string_temp), getStringID(Lang::Id_pOverclockWizard), height);
-				auto *clickableListItem22 = new tsl::elm::ListItem2(string_temp);
-				clickableListItem22->setClickListener([this](u64 keys) {
+				auto *clickableListItem2 = new tsl::elm::ListItem(string_temp);
+				clickableListItem2->setClickListener([this](u64 keys) {
 					if ((keys & HidNpadButton_A) && !block) {
 						tsl::changeTo<DockedOverWizardGui>(highestRefreshRate);
 						return true;
@@ -693,10 +699,10 @@ public:
 					return false;
 				});
 
-				list->addItem(clickableListItem22);
+				list->addItem(clickableListItem2);
 			}
 
-			auto *clickableListItem4 = new tsl::elm::ListItem2(getStringID(Lang::Id_AdditionalSettings));
+			auto *clickableListItem4 = new tsl::elm::ListItem(getStringID(Lang::Id_AdditionalSettings));
 			clickableListItem4->setClickListener([this](u64 keys) { 
 				if ((keys & HidNpadButton_A) && !block) {
 					tsl::changeTo<DockedAdditionalGui>();
@@ -708,7 +714,7 @@ public:
 			list->addItem(clickableListItem4);
 		}
 
-		auto *clickableListItem3 = new tsl::elm::ListItem2(getStringID(Lang::Id_FrameskipTester));
+		auto *clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_FrameskipTester));
 		clickableListItem3->setClickListener([this](u64 keys) { 
 			if ((keys & HidNpadButton_A)) {
 				tsl::changeTo<DockedFrameskipGui>();
@@ -730,8 +736,8 @@ public:
 			s32 height_impl = 0;
 			if (R_SUCCEEDED(ommGetDefaultDisplayResolution(&width, &height_impl))) {
 				if (height != height_impl) {
-					tsl::goBack();
-					tsl::changeTo<DockedGui>();
+					//tsl::goBack();
+					tsl::swapTo<DockedGui>();
 					return true;
 				}
 			}
@@ -741,8 +747,8 @@ public:
 				apmGetPerformanceMode(&mode);
 				apmExit();
 				if (mode != ApmPerformanceMode_Boost) {
-					tsl::goBack();
-					tsl::changeTo<DockedGui>();
+					//tsl::goBack();
+					tsl::swapTo<DockedGui>();
 					return true;
 				}
 			}
@@ -773,6 +779,7 @@ public:
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
+		list->disableCaching();
 
 		for (size_t i = 0; i < sizeof(rr); i++) {
 			if (rr[i] == false)
@@ -858,15 +865,16 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplaySettings));
 
 		auto list = new tsl::elm::List();
+		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
-			renderer->drawString(refreshRate_c, false, x, y+20, 20, renderer->a(0xFFFF));
+			renderer->drawString(refreshRate_c, false, x, y+20, 20, (0xFFFF));
 
 		}), 90);
 
 		if (entry_mode == ApmPerformanceMode_Normal && !displaySync.ds.handheld) {
-			auto *clickableListItem = new tsl::elm::ListItem2(getStringID(Lang::Id_IncreaseRefreshRate)); //Increase refresh rate
+			auto *clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_IncreaseRefreshRate)); //Increase refresh rate
 			clickableListItem->setClickListener([this](u64 keys) { 
 				if (keys & HidNpadButton_A) {
 					if ((refreshRate_g >= (isOLED ? supportedHandheldRefreshRatesOLED[0] : supportedHandheldRefreshRates[0])) && (refreshRate_g < (isOLED ? supportedHandheldRefreshRatesOLED[sizeof(supportedHandheldRefreshRatesOLED)-1] : supportedHandheldRefreshRates[sizeof(supportedHandheldRefreshRates)-1]))) {
@@ -884,7 +892,7 @@ public:
 
 			list->addItem(clickableListItem);
 
-			auto *clickableListItem2 = new tsl::elm::ListItem2(getStringID(Lang::Id_DecreaseRefreshRate)); //Decrease refresh rate
+			auto *clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_DecreaseRefreshRate)); //Decrease refresh rate
 			clickableListItem2->setClickListener([this](u64 keys) { 
 				if (keys & HidNpadButton_A) {
 					if (refreshRate_g > (isOLED ? supportedHandheldRefreshRatesOLED[0] : supportedHandheldRefreshRates[0])) {
@@ -903,15 +911,15 @@ public:
 			list->addItem(clickableListItem2);
 		}
 		else if (entry_mode == ApmPerformanceMode_Boost && displaySync.ds.docked) {
-			auto *clickableListItem2 = new tsl::elm::ListItem2(getStringID(Lang::Id_ChangeRefreshRate)); //Change refresh rate
-			clickableListItem2->setClickListener([](u64 keys) { 
+			auto *clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_ChangeRefreshRate)); //Change refresh rate
+			clickableListItem->setClickListener([](u64 keys) { 
 				if (keys & HidNpadButton_A) {
 					tsl::changeTo<DockedRefreshRateChangeGui>();
 					return true;
 				}
 				return false;
 			});	
-			list->addItem(clickableListItem2);	
+			list->addItem(clickableListItem);	
 		}
 
 		if (!oldSalty) {
@@ -944,8 +952,8 @@ public:
 						displaySync.ds.handheld = !displaySync.ds.handheld;
 					}
 					if (entry_mode == ApmPerformanceMode_Normal) {
-						tsl::goBack();
-						tsl::changeTo<DisplayGui>();
+						//tsl::goBack();
+						tsl::swapTo<DisplayGui>();
 					}
 					return true;
 				}
@@ -984,8 +992,8 @@ public:
 							displaySync.ds.docked = !displaySync.ds.docked;
 						}
 					if (entry_mode == ApmPerformanceMode_Boost) {
-						tsl::goBack();
-						tsl::changeTo<DisplayGui>();
+						//tsl::goBack();
+						tsl::swapTo<DisplayGui>();
 					}
 						return true;
 					}
@@ -994,7 +1002,7 @@ public:
 
 				list->addItem(clickableListItem6);
 			
-				auto *clickableListItem4 = new tsl::elm::ListItem2(getStringID(Lang::Id_DockedSettings)); //Docked settings
+				auto *clickableListItem4 = new tsl::elm::ListItem(getStringID(Lang::Id_DockedSettings)); //Docked settings
 				clickableListItem4->setClickListener([this](u64 keys) { 
 					if ((keys & HidNpadButton_A)) {
 						tsl::changeTo<DockedGui>();
@@ -1093,14 +1101,15 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplaySettingsWarning));
 
 		auto list = new tsl::elm::List();
+		list->disableCaching();
 
 		auto how_many_lines = 1 + std::ranges::count(Warning, '\n');
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
-			renderer->drawString(Warning.c_str(), false, x, y+20, 20, renderer->a(0xFFFF));
-		}), 10 + (how_many_lines * 20));
+			renderer->drawString(Warning.c_str(), false, x, y+20+1, 20, (0xFFFF));
+		}), 10 + (how_many_lines * 20) + 8);
 
-		auto *clickableListItem1 = new tsl::elm::ListItem2(getStringID(Lang::Id_Decline));
+		auto *clickableListItem1 = new tsl::elm::ListItem(getStringID(Lang::Id_Decline));
 		clickableListItem1->setClickListener([this](u64 keys) { 
 			if (keys & HidNpadButton_A) {
 				tsl::goBack();
@@ -1111,17 +1120,17 @@ public:
 
 		list->addItem(clickableListItem1);
 
-		auto *clickableListItem2 = new tsl::elm::ListItem2(getStringID(Lang::Id_Accept));
-		clickableListItem2->setClickListener([this](u64 keys) { 
+		auto *clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_Accept));
+		clickableListItem->setClickListener([this](u64 keys) { 
 			if ((keys & HidNpadButton_A)) {
-				tsl::goBack();
-				tsl::changeTo<DisplayGui>();
+				//tsl::goBack();
+				tsl::swapTo<DisplayGui>();
 				return true;
 			}
 			return false;
 		});
 
-		list->addItem(clickableListItem2);
+		list->addItem(clickableListItem);
 		
 		frame->setContent(list);
 
