@@ -342,20 +342,6 @@ void downloadPatch(void*) {
 
 	curl_timeout = false;
 
-    static const SocketInitConfig socketInitConfig = {
-
-        .tcp_tx_buf_size = 0x8000,
-        .tcp_rx_buf_size = 0x8000,
-        .tcp_tx_buf_max_size = 0x20000,
-        .tcp_rx_buf_max_size = 0x20000,
-
-        .udp_tx_buf_size = 0,
-        .udp_rx_buf_size = 0,
-
-        .sb_efficiency = 1,
-		.bsd_service_type = BsdServiceType_Auto
-    };
-
 	uint64_t startTick = svcGetSystemTick();
 	uint64_t timeoutTick = startTick + (30 * systemtickfrequency); //30 seconds
 	long msPeriod = (timeoutTick - svcGetSystemTick()) / (systemtickfrequency / 1000);
@@ -375,6 +361,22 @@ void downloadPatch(void*) {
 	}
 	nifmExit();
 
+	constexpr SocketInitConfig socketInitConfig = {
+	    // TCP buffers
+	    .tcp_tx_buf_size     = 16 * 1024,   // 16 KB default
+	    .tcp_rx_buf_size     = 16 * 1024,   // 16 KB default
+	    .tcp_tx_buf_max_size = 64 * 1024,   // 64 KB default max
+	    .tcp_rx_buf_max_size = 64 * 1024,   // 64 KB default max
+	    
+	    // UDP buffers
+	    .udp_tx_buf_size     = 512,         // 512 B default
+	    .udp_rx_buf_size     = 512,         // 512 B default
+	
+	    // Socket buffer efficiency
+	    .sb_efficiency       = 1,           // 0 = default, balanced memory vs CPU
+	                                        // 1 = prioritize memory efficiency (smaller internal allocations)
+	    .bsd_service_type    = BsdServiceType_Auto // Auto-select service
+	};
 	socketInitialize(&socketInitConfig);
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
@@ -386,7 +388,7 @@ void downloadPatch(void*) {
 		char file_path[192] = "";
 		snprintf(download_path, sizeof(download_path), "sdmc:/SaltySD/plugins/FPSLocker/patches/%016lX/", TID);
 		
-		std::filesystem::create_directories(download_path);
+		ult::createDirectory(download_path);
 
 		snprintf(file_path, sizeof(file_path), "sdmc:/SaltySD/plugins/FPSLocker/patches/%016lX/temp.yaml", TID);
 
@@ -467,8 +469,8 @@ void downloadPatch(void*) {
 			last_TID_checked = TID;
 			CURL *curl_ga = curl_easy_init();
 			if (curl_ga) {
-				const char macro_id[] = "\x41\x4B\x66\x79\x63\x62\x78\x72\x77\x45\x30\x51\x66\x75\x39\x34\x4A\x38\x44\x6E\x69\x53\x46\x6A\x33\x61\x73\x73\x6C\x68\x78\x42\x46\x43\x2D\x50\x52\x7A\x50\x64\x55\x6E\x37\x41\x5F\x4C\x4D\x61\x69\x37\x4F\x56\x57\x42\x70\x6E\x62\x73\x61\x53\x77\x55\x4D\x42\x72\x44\x69\x45\x69\x6F\x57\x65\x33\x77";
-				const char m_template[] = "\x68\x74\x74\x70\x73\x3a\x2f\x2f\x73\x63\x72\x69\x70\x74\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x6d\x61\x63\x72\x6f\x73\x2f\x73\x2f\x25\x73\x2f\x65\x78\x65\x63\x3f\x54\x49\x44\x3d\x25\x30\x31\x36\x6c\x58\x26\x42\x49\x44\x3d\x25\x30\x31\x36\x6c\x58\x26\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x64\x26\x44\x69\x73\x70\x6c\x61\x79\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x73\x26\x46\x6f\x75\x6e\x64\x3d\x25\x64\x26\x4e\x52\x4f\x3d\x25\x30\x31\x36\x6c\x58\x26\x41\x70\x70\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x73";
+				constexpr char macro_id[] = "\x41\x4B\x66\x79\x63\x62\x78\x72\x77\x45\x30\x51\x66\x75\x39\x34\x4A\x38\x44\x6E\x69\x53\x46\x6A\x33\x61\x73\x73\x6C\x68\x78\x42\x46\x43\x2D\x50\x52\x7A\x50\x64\x55\x6E\x37\x41\x5F\x4C\x4D\x61\x69\x37\x4F\x56\x57\x42\x70\x6E\x62\x73\x61\x53\x77\x55\x4D\x42\x72\x44\x69\x45\x69\x6F\x57\x65\x33\x77";
+				constexpr char m_template[] = "\x68\x74\x74\x70\x73\x3a\x2f\x2f\x73\x63\x72\x69\x70\x74\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x6d\x61\x63\x72\x6f\x73\x2f\x73\x2f\x25\x73\x2f\x65\x78\x65\x63\x3f\x54\x49\x44\x3d\x25\x30\x31\x36\x6c\x58\x26\x42\x49\x44\x3d\x25\x30\x31\x36\x6c\x58\x26\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x64\x26\x44\x69\x73\x70\x6c\x61\x79\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x73\x26\x46\x6f\x75\x6e\x64\x3d\x25\x64\x26\x4e\x52\x4f\x3d\x25\x30\x31\x36\x6c\x58\x26\x41\x70\x70\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x73";
 				char link[256] = "";
 				MemoryInfo mem = {0};
 				u32 pageinfo = 0;
@@ -554,7 +556,7 @@ void downloadPatch(void*) {
 						curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, msPeriod);
 						FILE* fp = fopen(file_path, "wb");
 						if (!fp) {
-							std::filesystem::create_directories(std::filesystem::path(file_path).parent_path());
+							ult::createDirectory(ult::getParentDirFromPath(file_path));
 							fp = fopen(file_path, "wb");
 						}
 						if (fp) {
