@@ -6,7 +6,6 @@ public:
 		auto frame = new tsl::elm::OverlayFrame(getStringID(Lang::Id_SetBuffering), " ");
 
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		if (Shared->expectedSetBuffers == -1) list->addItem(new tsl::elm::CategoryHeader(getStringID(Lang::Id_ItWillBeAppliedOnNextGameBoot), true));
 		auto *clickableListItem0 = new tsl::elm::ListItem(getStringID(Lang::Id_Double));
@@ -122,7 +121,6 @@ public:
         auto frame = new tsl::elm::OverlayFrame(getStringID(Lang::Id_NVNWindowSyncWait), getStringID(Lang::Id_Mode));
 
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		auto *clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_Enabled));
 		clickableListItem->setClickListener([](u64 keys) { 
@@ -231,7 +229,6 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_AdvancedSettings));
 
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		if ((Shared -> API)) {
 			switch((Shared -> API)) {
@@ -298,7 +295,7 @@ public:
 		list->addItem(new tsl::elm::CategoryHeader(getStringID(Lang::Id_FPSLockerPatches), false));
 
 		if (R_FAILED(configValid)) {
-			base_height = 132;
+			base_height = 154;
 		}
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
@@ -311,11 +308,18 @@ public:
 					renderer->drawString(patchChar, false, x, y+64, 20, (0xF99F));
 				}
 				else renderer->drawString(patchChar, false, x, y+64, 20, (0xFFFF));
+				if (progressBar[0] != 0) {
+					renderer->drawString(progressBar, false, x+300, y+(base_height), 20, (0xF99F));
+				}
 			}
 			else {
 				renderer->drawString(lockInvalid, false, x, y+20, 20, (0xFFFF));
-				if (patchChar[0] != 0)
+				if (patchChar[0] != 0) {
 					renderer->drawString(patchChar, false, x, y+84, 20, (0xF99F));
+					if (progressBar[0] != 0) {
+						renderer->drawString(progressBar, false, x+300, y+(base_height), 20, (0xF99F));
+					}
+				}
 				else renderer->drawString(lockVersionExpected, false, x, y+84, 20, (0xFFFF));
 			}
 				
@@ -353,14 +357,16 @@ public:
 			list->addItem(clickableListItem2);
 		}
 		if (R_FAILED(configValid)) {
-			list->addItem(new tsl::elm::CategoryHeader(getStringID(Lang::Id_ThisCanTakeUpTo30Seconds), true));
+			char temp[128] = "";
+			snprintf(temp, sizeof(temp), getStringID(Lang::Id_ThisCanTakeUpTo30Seconds), timeout_in_seconds * sources.size());
+			list->addItem(new tsl::elm::CategoryHeader(temp, true));
 		}
 		auto *clickableListItem4 = new tsl::elm::MiniListItem(getStringID(Lang::Id_CheckDownloadConfigFile));
 		clickableListItem4->setClickListener([this](u64 keys) { 
 			if ((keys & HidNpadButton_A) && PluginRunning && exitPossible) {
 				exitPossible = false;
 				sprintf(patchChar, getStringID(Lang::Id_CheckingWarehouseForConfig));
-				
+
 				threadCreate(&t1, downloadPatch, NULL, NULL, 0x20000, 0x3F, 3);
 				threadStart(&t1);
 				return true;
@@ -421,18 +427,9 @@ public:
 	}
 
     virtual bool handleInput(u64 keysDown, u64 keysHeld, const HidTouchState &touchPos, HidAnalogStickState joyStickPosLeft, HidAnalogStickState joyStickPosRight) override {
-		if (exitPossible) {
-			if (keysDown & HidNpadButton_B) {
-				tsl::goBack();
-				triggerExitFeedback();
-				return true;
-			}
-		}
-		else if (!exitPossible) {
-			if (keysDown & HidNpadButton_B)
-				return true;
-			Result rc = error_code;
-			if (rc != UINT32_MAX && rc != 0x404) {
+		if (keysDown & HidNpadButton_B) {
+			if (!exitPossible) {
+				atomic_store(&cancel_flag, 1);
 				threadWaitForExit(&t1);
 				threadClose(&t1);
 				exitPossible = true;
@@ -440,6 +437,7 @@ public:
 				error_code = UINT32_MAX;
 			}
 			tsl::goBack();
+			triggerExitFeedback();
 			return true;
 		}
 		Result rc = error_code;
@@ -462,57 +460,46 @@ public:
 				snprintf(progressBar, sizeof(progressBar), "%lu%%", (size_t)(data_downloaded * 100) / data_to_download);
 
 			}
-			else if (rc == 0x212 || rc == 0x312) {
-				sprintf(patchChar, getStringID(Lang::Id_ConfigIsNotAvailableRC), rc);
+			else strcpy(patchChar, getStringID(Lang::Id_ConfigIsNotAvailableExitNotPossibleUntilFinished));
+		}
+		else if (rc == 0x405) {
+			strcpy(patchChar, getStringID(Lang::Id_ConfigIsNotAvailableTimeout));
+		}
+		else if (rc == 0x406) {
+			strcpy(patchChar, getStringID(Lang::Id_ConfigIsNotAvailableConnectionError));
+		}
+		else if (rc == 0x104) {
+			strcpy(patchChar, getStringID(Lang::Id_NoNewConfigAvailable));
+		}
+		else if (rc == 0x412) {
+			strcpy(patchChar, getStringID(Lang::Id_InternetConnectionNotAvailable));
+		}
+		else if (rc == 0x1001) {
+			strcpy(patchChar, getStringID(Lang::Id_PatchIsNotNeededForThisGame));
+		}
+		else if (rc == 0x1002) {
+			strcpy(patchChar, getStringID(Lang::Id_ThisGameIsNotListedInWarehouse));
+		}
+		else if (rc == 0x1003) {
+			sprintf(patchChar, getStringID(Lang::Id_ThisGameIsListedInWarehouseWithDifferentVersionPatchNotNeeded), expected_display_version);
+		}
+		else if (rc == 0x1004) {
+			sprintf(patchChar, getStringID(Lang::Id_ThisGameIsListedInWarehouseWithDifferentVersionPatchNeeded), expected_display_version);
+		}
+		else if (rc == 0x1005) {
+			sprintf(patchChar, getStringID(Lang::Id_ThisGameIsListedInWarehouseWithDifferentVersionConfigAvailable), expected_display_version);
+		}
+		else if (rc == 0x1006) {
+			strcpy(patchChar, getStringID(Lang::Id_ThisGameIsListedInWarehouseConfigNotAvailable));
+		}
+		else if (R_SUCCEEDED(rc)) {
+			FILE* fp = fopen(patchPath, "rb");
+			if (fp) {
+				fclose(fp);
+				remove(patchPath);
 			}
-			else if (rc == 0x404) {
-				sprintf(patchChar, getStringID(Lang::Id_ConfigIsNotAvailableExitNotPossibleUntilFinished));
-			}
-			else if (rc == 0x405) {
-				sprintf(patchChar, getStringID(Lang::Id_ConfigIsNotAvailableTimeout));
-			}
-			else if (rc == 0x406) {
-				sprintf(patchChar, getStringID(Lang::Id_ConfigIsNotAvailableConnectionError));
-			}
-			else if (rc == 0x104) {
-				sprintf(patchChar, getStringID(Lang::Id_NoNewConfigAvailable));
-			}
-			else if (rc == 0x412) {
-				sprintf(patchChar, getStringID(Lang::Id_InternetConnectionNotAvailable));
-			}
-			else if (rc == 0x1001) {
-				sprintf(patchChar, getStringID(Lang::Id_PatchIsNotNeededForThisGame));
-			}
-			else if (rc == 0x1002) {
-				sprintf(patchChar, getStringID(Lang::Id_ThisGameIsNotListedInWarehouse));
-			}
-			else if (rc == 0x1003) {
-				sprintf(patchChar, getStringID(Lang::Id_ThisGameIsListedInWarehouseWithDifferentVersionPatchNotNeeded), expected_display_version);
-			}
-			else if (rc == 0x1004) {
-				sprintf(patchChar, getStringID(Lang::Id_ThisGameIsListedInWarehouseWithDifferentVersionPatchNeeded), expected_display_version);
-			}
-			else if (rc == 0x1005) {
-				sprintf(patchChar, getStringID(Lang::Id_ThisGameIsListedInWarehouseWithDifferentVersionConfigAvailable), expected_display_version);
-			}
-			else if (rc == 0x1006) {
-				sprintf(patchChar, getStringID(Lang::Id_ThisGameIsListedInWarehouseConfigNotAvailable));
-			}
-			else if (R_SUCCEEDED(rc)) {
-				FILE* fp = fopen(patchPath, "rb");
-				if (fp) {
-					fclose(fp);
-					remove(patchPath);
-				}
-				//tsl::goBack();
-				tsl::swapTo<AdvancedGui>();
-				return true;
-			}
-			else if (rc != UINT32_MAX) {
-				sprintf(patchChar, getStringID(Lang::Id_ConnectionErrorRC), rc);
-			}
-			tsl::goBack();
-			tsl::changeTo<AdvancedGui>();
+			//tsl::goBack();
+			tsl::swapTo<AdvancedGui>();
 			return true;
 		}
 		else if (rc != UINT32_MAX) {

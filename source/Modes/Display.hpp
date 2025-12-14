@@ -21,7 +21,6 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_FrameskipTester));
 
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
             if (!state) {
@@ -98,7 +97,6 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplayUnderclockWizard));
 
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
@@ -278,7 +276,6 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplayOverclockWizard));
 
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
@@ -450,7 +447,6 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", string_temp);
 
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		for (size_t i = 0; i < 4; i++) {
 			char Hz[] = "120 Hz";
@@ -531,7 +527,6 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DockedDisplayAdditionalSettings));
 
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		auto *clickableListItem4 = new tsl::elm::ToggleListItem(getStringID(Lang::Id_AllowPatchesToForce60Hz), !as.dontForce60InDocked);
 		clickableListItem4->setClickListener([this](u64 keys) { 
@@ -649,7 +644,6 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DockedDisplaySettings));
 
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
@@ -779,7 +773,6 @@ public:
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		for (size_t i = 0; i < sizeof(rr); i++) {
 			if (rr[i] == false)
@@ -865,7 +858,6 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplaySettings));
 
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
@@ -1101,7 +1093,6 @@ public:
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplaySettingsWarning));
 
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		auto how_many_lines = 1 + std::ranges::count(Warning, '\n');
 
