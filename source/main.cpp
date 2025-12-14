@@ -405,12 +405,23 @@ public:
 			return true;
 		}
 		counter += 0.1f;
+
+		static auto lastSelected = selected;
+
 		if (keysDown & HidNpadButton_Down) {
 			if ((selected / 4) < (sizeofAllowedFPSTargets / 4)) 
 				selected += 4;
 			else selected = selected % 4;
 			if (selected >= sizeofAllowedFPSTargets)
 				selected = sizeofAllowedFPSTargets - 1;
+
+			if (selected != lastSelected) 
+				triggerNavigationFeedback();
+			else {
+				triggerRumbleClick.store(true, std::memory_order_release);
+				triggerWallSound.store(true, std::memory_order_release);
+			}
+			lastSelected = selected;
 			return true;
 		}
 		else if (keysDown & HidNpadButton_Up) {
@@ -419,6 +430,14 @@ public:
 			else selected = ((sizeofAllowedFPSTargets / 4) * 4) + (selected % 4);
 			if (selected >= sizeofAllowedFPSTargets)
 				selected = sizeofAllowedFPSTargets - 1;	
+
+			if (selected != lastSelected) 
+				triggerNavigationFeedback();
+			else {
+				triggerRumbleClick.store(true, std::memory_order_release);
+				triggerWallSound.store(true, std::memory_order_release);
+			}
+			lastSelected = selected;
 			return true;
 		}
 		else if (keysDown & HidNpadButton_Right) {
@@ -429,6 +448,14 @@ public:
 			}
 			if (selected >= sizeofAllowedFPSTargets)
 				selected = (sizeofAllowedFPSTargets / 4) * 4;
+
+			if (selected != lastSelected) 
+				triggerNavigationFeedback();
+			else {
+				triggerRumbleClick.store(true, std::memory_order_release);
+				triggerWallSound.store(true, std::memory_order_release);
+			}
+			lastSelected = selected;
 			return true;
 		}
 		else if (keysDown & HidNpadButton_Left) {
@@ -439,6 +466,14 @@ public:
 			}
 			if (selected >= sizeofAllowedFPSTargets)
 				selected = sizeofAllowedFPSTargets - 1;
+
+			if (selected != lastSelected) 
+				triggerNavigationFeedback();
+			else {
+				triggerRumbleClick.store(true, std::memory_order_release);
+				triggerWallSound.store(true, std::memory_order_release);
+			}
+			lastSelected = selected;
 			return true;
 		}
 
@@ -482,6 +517,7 @@ public:
 			}
 			saveSettings();
 			tsl::goBack();
+			triggerEnterFeedback();
 			return true;
 		}			
 		return false;   // Return true here to singal the inputs have been consumed
