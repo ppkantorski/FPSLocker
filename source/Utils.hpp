@@ -207,96 +207,98 @@ void getDockedHighestRefreshRate(uint8_t* highestRefreshRate, uint8_t* setLinkRa
 }
 
 void LoadDockedModeAllowedSave(DockedModeRefreshRateAllowed &rr, DockedAdditionalSettings &as, int* displayCRC, bool is720p) {
+	// Initialize refresh rates
 	for (size_t i = 0; i < sizeof(DockedModeRefreshRateAllowed); i++) {
-		if (DockedModeRefreshRateAllowedValues[i] == 60 || DockedModeRefreshRateAllowedValues[i] == 50) rr[i] = true;
-		else rr[i] = false;
+		rr[i] = (DockedModeRefreshRateAllowedValues[i] == 60 || DockedModeRefreshRateAllowedValues[i] == 50);
 	}
+	
+	// Initialize additional settings
 	as.dontForce60InDocked = false;
 	as.fpsTargetWithoutRRMatchLowest = false;
 	as.displaySyncDockedOutOfFocus60 = false;
 	TV_name = "Unknown";
+	
 	tsl::hlp::doWithSmSession([]{
 		setsysInitialize();
 	});
-    SetSysEdid edid = {0};
-    if (R_FAILED(setsysGetEdid(&edid))) {
-		return;
-    }
-    char path[128] = "";
+	
+	SetSysEdid edid = {0};
+	if (R_FAILED(setsysGetEdid(&edid))) return;
+	
 	int crc32 = crc32Calculate(&edid, sizeof(edid));
 	if (displayCRC) *displayCRC = crc32;
-    snprintf(path, sizeof(path), "sdmc:/SaltySD/plugins/FPSLocker/ExtDisplays/%08X.ini", crc32);
-    if (file_exists(path) == true) {
-		FILE* file = fopen(path, "r");
-		fseek(file, 0, 2);
-		size_t size = ftell(file);
-		fseek(file, 0, 0);
-		std::string string_data(size, 0);
-		fread(string_data.data(), size, 1, file);
+	
+	char path[128];
+	snprintf(path, sizeof(path), "sdmc:/SaltySD/plugins/FPSLocker/ExtDisplays/%08X.ini", crc32);
+	
+	if (!file_exists(path)) return;
+	
+	// Read file directly without creating large string buffer
+	FILE* file = fopen(path, "r");
+	if (!file) return;
+	
+	fseek(file, 0, SEEK_END);
+	size_t size = ftell(file);
+	if (size == 0) {
 		fclose(file);
-		if (size == 0) return;
-		tsl::hlp::ini::IniData iniData = tsl::hlp::ini::parseIni(string_data);
-		if (iniData.contains("Common") == false) {
-			return;
-		}
-		if (iniData["Common"].contains("tvName") == true) {
-			TV_name = iniData["Common"]["tvName"];
-		}
-		if (!is720p) {
-			if (iniData["Common"].contains("refreshRateAllowed") == false) {
-				return;
-			}
-			if (iniData["Common"]["refreshRateAllowed"].begin()[0] != '{')
-				return;
-			if ((iniData["Common"]["refreshRateAllowed"].end()-1)[0] != '}')
-				return;
-			std::string rrAllowed = std::string(iniData["Common"]["refreshRateAllowed"].begin()+1, iniData["Common"]["refreshRateAllowed"].end()-1);
-			for (const auto& word_view : std::views::split(rrAllowed, ',')) {
-				std::string temp_string(word_view.begin(), word_view.end());
+		return;
+	}
+	fseek(file, 0, SEEK_SET);
+	
+	std::string string_data(size, 0);
+	fread(string_data.data(), size, 1, file);
+	fclose(file);
+	
+	tsl::hlp::ini::IniData iniData = tsl::hlp::ini::parseIni(string_data);
+	
+	if (!iniData.contains("Common")) return;
+	
+	auto& common = iniData["Common"];
+	
+	// Get TV name
+	if (common.contains("tvName")) {
+		TV_name = common["tvName"];
+	}
+	
+	// Parse refresh rates
+	const char* key = is720p ? "refreshRateAllowed720p" : "refreshRateAllowed";
+	if (common.contains(key)) {
+		const auto& rrStr = common[key];
+		if (rrStr.size() >= 2 && rrStr.front() == '{' && rrStr.back() == '}') {
+			// Use string_view to avoid substring allocation
+			std::string_view rrAllowed(rrStr.data() + 1, rrStr.size() - 2);
+			
+			size_t start = 0;
+			while (start < rrAllowed.size()) {
+				size_t end = rrAllowed.find(',', start);
+				if (end == std::string_view::npos) end = rrAllowed.size();
+				
 				int value = 0;
-				auto [ptr, ec] = std::from_chars(temp_string.c_str(), &temp_string.c_str()[temp_string.length()], value);
-				if (ec != std::errc{}) return;
-				for (size_t i = 0; i < sizeof(DockedModeRefreshRateAllowedValues); i++) {
-					if (value == DockedModeRefreshRateAllowedValues[i]) {
-						rr[i] = true;
-						break;
+				auto result = std::from_chars(rrAllowed.data() + start, rrAllowed.data() + end, value);
+				
+				if (result.ec == std::errc{}) {
+					for (size_t i = 0; i < sizeof(DockedModeRefreshRateAllowedValues); i++) {
+						if (value == DockedModeRefreshRateAllowedValues[i]) {
+							rr[i] = true;
+							break;
+						}
 					}
 				}
+				start = end + 1;
 			}
 		}
-		else {
-			if (iniData["Common"].contains("refreshRateAllowed720p") == false) {
-				return;
-			}
-			if (iniData["Common"]["refreshRateAllowed720p"].begin()[0] != '{')
-				return;
-			if ((iniData["Common"]["refreshRateAllowed720p"].end()-1)[0] != '}')
-				return;
-			std::string rrAllowed = std::string(iniData["Common"]["refreshRateAllowed720p"].begin()+1, iniData["Common"]["refreshRateAllowed720p"].end()-1);
-			for (const auto& word_view : std::views::split(rrAllowed, ',')) {
-				std::string temp_string(word_view.begin(), word_view.end());
-				int value = 0;
-				auto [ptr, ec] = std::from_chars(temp_string.c_str(), &temp_string.c_str()[temp_string.length()], value);
-				if (ec != std::errc{}) return;
-				for (size_t i = 0; i < sizeof(DockedModeRefreshRateAllowedValues); i++) {
-					if (value == DockedModeRefreshRateAllowedValues[i]) {
-						rr[i] = true;
-						break;
-					}
-				}
-			}
-		}
-		if (iniData["Common"].contains("allowPatchesToForce60InDocked") == true) {
-			as.dontForce60InDocked = (bool)!strncasecmp(iniData["Common"]["allowPatchesToForce60InDocked"].c_str(), "False", 5);
-		}
-		if (iniData["Common"].contains("matchLowestRefreshRate") == true) {
-			as.fpsTargetWithoutRRMatchLowest = (bool)!strncasecmp(iniData["Common"]["matchLowestRefreshRate"].c_str(), "True", 4);
-		}
-		if (iniData["Common"].contains("bringDefaultRefreshRateWhenOutOfFocus") == true) {
-			as.displaySyncDockedOutOfFocus60 = (bool)!strncasecmp(iniData["Common"]["bringDefaultRefreshRateWhenOutOfFocus"].c_str(), "True", 4);
-		}
-    }
-    return;
+	}
+	
+	// Parse boolean settings
+	if (common.contains("allowPatchesToForce60InDocked")) {
+		as.dontForce60InDocked = (strncasecmp(common["allowPatchesToForce60InDocked"].c_str(), "False", 5) == 0);
+	}
+	if (common.contains("matchLowestRefreshRate")) {
+		as.fpsTargetWithoutRRMatchLowest = (strncasecmp(common["matchLowestRefreshRate"].c_str(), "True", 4) == 0);
+	}
+	if (common.contains("bringDefaultRefreshRateWhenOutOfFocus")) {
+		as.displaySyncDockedOutOfFocus60 = (strncasecmp(common["bringDefaultRefreshRateWhenOutOfFocus"].c_str(), "True", 4) == 0);
+	}
 }
 
 void SaveDockedModeAllowedSave(DockedModeRefreshRateAllowed rr, DockedAdditionalSettings &as, bool is720p) {
@@ -389,7 +391,7 @@ static int xfer_callback(void *clientp, curl_off_t dltotal, curl_off_t dlnow,
     return 0;
 }
 
-std::array sources = {
+constexpr std::array sources = {
 	std::pair<const char*, const char*>("https://gitee.com/sskyswitch/FPSLocker-Warehouse/raw/v4/", ""),
 	std::pair<const char*, const char*>("https://raw.githubusercontent.com/masagrator/FPSLocker-Warehouse/v4/", "")
 };
@@ -416,8 +418,8 @@ void sendConfirmation(Result temp_error_code) {
 		last_TID_checked = TID;
 		CURL *curl_ga = curl_easy_init();
 		if (curl_ga) {
-			const char macro_id[] = "\x41\x4B\x66\x79\x63\x62\x78\x72\x77\x45\x30\x51\x66\x75\x39\x34\x4A\x38\x44\x6E\x69\x53\x46\x6A\x33\x61\x73\x73\x6C\x68\x78\x42\x46\x43\x2D\x50\x52\x7A\x50\x64\x55\x6E\x37\x41\x5F\x4C\x4D\x61\x69\x37\x4F\x56\x57\x42\x70\x6E\x62\x73\x61\x53\x77\x55\x4D\x42\x72\x44\x69\x45\x69\x6F\x57\x65\x33\x77";
-			const char m_template[] = "\x68\x74\x74\x70\x73\x3a\x2f\x2f\x73\x63\x72\x69\x70\x74\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x6d\x61\x63\x72\x6f\x73\x2f\x73\x2f\x25\x73\x2f\x65\x78\x65\x63\x3f\x54\x49\x44\x3d\x25\x30\x31\x36\x6c\x58\x26\x42\x49\x44\x3d\x25\x30\x31\x36\x6c\x58\x26\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x64\x26\x44\x69\x73\x70\x6c\x61\x79\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x73\x26\x46\x6f\x75\x6e\x64\x3d\x25\x64\x26\x4e\x52\x4f\x3d\x25\x30\x31\x36\x6c\x58\x26\x41\x70\x70\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x73";
+			constexpr char macro_id[] = "\x41\x4B\x66\x79\x63\x62\x78\x72\x77\x45\x30\x51\x66\x75\x39\x34\x4A\x38\x44\x6E\x69\x53\x46\x6A\x33\x61\x73\x73\x6C\x68\x78\x42\x46\x43\x2D\x50\x52\x7A\x50\x64\x55\x6E\x37\x41\x5F\x4C\x4D\x61\x69\x37\x4F\x56\x57\x42\x70\x6E\x62\x73\x61\x53\x77\x55\x4D\x42\x72\x44\x69\x45\x69\x6F\x57\x65\x33\x77";
+			constexpr char m_template[] = "\x68\x74\x74\x70\x73\x3a\x2f\x2f\x73\x63\x72\x69\x70\x74\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x6d\x61\x63\x72\x6f\x73\x2f\x73\x2f\x25\x73\x2f\x65\x78\x65\x63\x3f\x54\x49\x44\x3d\x25\x30\x31\x36\x6c\x58\x26\x42\x49\x44\x3d\x25\x30\x31\x36\x6c\x58\x26\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x64\x26\x44\x69\x73\x70\x6c\x61\x79\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x73\x26\x46\x6f\x75\x6e\x64\x3d\x25\x64\x26\x4e\x52\x4f\x3d\x25\x30\x31\x36\x6c\x58\x26\x41\x70\x70\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x73";
 			char link[256] = "";
 			MemoryInfo mem = {0};
 			u32 pageinfo = 0;

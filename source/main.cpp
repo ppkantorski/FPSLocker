@@ -44,6 +44,9 @@ public:
 		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
 		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
 		auto frame = new tsl::elm::OverlayFrame(_titleidc, _titleName);
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -152,6 +155,9 @@ public:
 		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
 		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
 		auto frame = new tsl::elm::OverlayFrame("FPSLocker", APP_VERSION);
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -234,6 +240,9 @@ public:
 		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
 		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
 		auto frame = new tsl::elm::OverlayFrame("FPSLocker", APP_VERSION);
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -339,6 +348,9 @@ public:
 		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
 		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
 		auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(9));
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -508,6 +520,9 @@ public:
 		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
 		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
 		auto frame = new tsl::elm::OverlayFrame("FPSLocker", APP_VERSION);
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -795,6 +810,9 @@ public:
 	// Allocate all elements on the heap. libtesla will make sure to clean them up when not needed anymore
 	virtual tsl::elm::Element* createUI() override {
 		auto frame = new tsl::elm::OverlayFrame("FPSLocker", APP_VERSION);
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 		return frame;
 	}
 
