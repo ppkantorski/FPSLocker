@@ -155,35 +155,35 @@ std::string TV_name = "Unknown";
  * @param[out] actual_size Actual output size.
  * @param[out] unk Returned with size, always 0.
  */
-Result nsGetApplicationControlData2(NsApplicationControlSource source, u64 application_id, NsApplicationControlData* buffer, size_t size, u8 flag1, u8 flag2, u64* actual_size, u32* unk) {
-    if (hosversionBefore(19,0,0))
-        return MAKERESULT(Module_Libnx, LibnxError_IncompatSysVer);
-    Service srv={0}, *srv_ptr = &srv;
-    Result rc=0;
-    u32 cmd_id = 6;
-    rc = nsGetReadOnlyApplicationControlDataInterface(&srv);
-
-    const struct {
-        u8 source;
-        u8 flags[2];
-        u8 pad[5];
-        u64 application_id;
-    } in = { source, {flag1, flag2}, {0}, application_id };
-
-    u64 tmp=0;
-
-    if (R_SUCCEEDED(rc)) rc = serviceDispatchInOut(srv_ptr, cmd_id, in, tmp,
-        .buffer_attrs = { SfBufferAttr_HipcMapAlias | SfBufferAttr_Out },
-        .buffers = { { buffer, size } },
-    );
-    if (R_SUCCEEDED(rc)) {
-        if (actual_size) *actual_size = tmp >> 32;
-        if (unk) *unk = (u32)tmp;
-    }
-
-    serviceClose(&srv);
-    return rc;
-}
+//Result nsGetApplicationControlData2(NsApplicationControlSource source, u64 application_id, NsApplicationControlData* buffer, size_t size, u8 flag1, u8 flag2, u64* actual_size, u32* unk) {
+//    if (hosversionBefore(19,0,0))
+//        return MAKERESULT(Module_Libnx, LibnxError_IncompatSysVer);
+//    Service srv={0}, *srv_ptr = &srv;
+//    Result rc=0;
+//    u32 cmd_id = 6;
+//    rc = nsGetReadOnlyApplicationControlDataInterface(&srv);
+//
+//    const struct {
+//        u8 source;
+//        u8 flags[2];
+//        u8 pad[5];
+//        u64 application_id;
+//    } in = { source, {flag1, flag2}, {0}, application_id };
+//
+//    u64 tmp=0;
+//
+//    if (R_SUCCEEDED(rc)) rc = serviceDispatchInOut(srv_ptr, cmd_id, in, tmp,
+//        .buffer_attrs = { SfBufferAttr_HipcMapAlias | SfBufferAttr_Out },
+//        .buffers = { { buffer, size } },
+//    );
+//    if (R_SUCCEEDED(rc)) {
+//        if (actual_size) *actual_size = tmp >> 32;
+//        if (unk) *unk = (u32)tmp;
+//    }
+//
+//    serviceClose(&srv);
+//    return rc;
+//}
 
 bool file_exists(const char *filename)
 {
@@ -456,40 +456,6 @@ Result downloadPatchImpl(const char* source, const char* suffix) {
 	uint64_t timeoutTick = startTick + (timeout_in_seconds * systemtickfrequency);
 	long msPeriod = (timeoutTick - svcGetSystemTick()) / (systemtickfrequency / 1000);
 
-	smInitialize();
-
-
-	nifmInitialize(NifmServiceType_System);
-	u32 dummy = 0;
-	NifmInternetConnectionType NifmConnectionType = (NifmInternetConnectionType)-1;
-	NifmInternetConnectionStatus NifmConnectionStatus = (NifmInternetConnectionStatus)-1;
-	if (R_FAILED(nifmGetInternetConnectionStatus(&NifmConnectionType, &dummy, &NifmConnectionStatus)) || NifmConnectionStatus != NifmInternetConnectionStatus_Connected) {
-		nifmExit();
-		smExit();
-		error_code = 0x412;
-		return;
-	}
-	nifmExit();
-
-	constexpr SocketInitConfig socketInitConfig = {
-	    // TCP buffers
-	    .tcp_tx_buf_size     = 16 * 1024,   // 16 KB default
-	    .tcp_rx_buf_size     = 16 * 1024,   // 16 KB default
-	    .tcp_tx_buf_max_size = 64 * 1024,   // 64 KB default max
-	    .tcp_rx_buf_max_size = 64 * 1024,   // 64 KB default max
-	    
-	    // UDP buffers
-	    .udp_tx_buf_size     = 512,         // 512 B default
-	    .udp_rx_buf_size     = 512,         // 512 B default
-	
-	    // Socket buffer efficiency
-	    .sb_efficiency       = 1,           // 0 = default, balanced memory vs CPU
-	                                        // 1 = prioritize memory efficiency (smaller internal allocations)
-	    .bsd_service_type    = BsdServiceType_Auto // Auto-select service
-	};
-	socketInitialize(&socketInitConfig);
-
-    curl_global_init(CURL_GLOBAL_DEFAULT);
 	CURL *curl = curl_easy_init();
 
     if (curl) {
@@ -544,52 +510,8 @@ Result downloadPatchImpl(const char* source, const char* suffix) {
 			if (http_code == 200) {
 				temp_error_code = 0;
 			}
-			fseek(fp, 0, SEEK_SET);
-			char* buffer = (char*)calloc(1, filesize + 1);
-			fread(buffer, 1, filesize, fp);
-			fclose(fp);
-			char BID_char[18] = "";
-			snprintf(BID_char, sizeof(BID_char), " %016lX", BID);
-			if (std::search(&buffer[0], &buffer[filesize], &BID_char[0], &BID_char[17]) == &buffer[filesize]) {
-				remove(file_path);
-				char Not_found[] = "404: Not Found";
-				if (!strncmp(buffer, Not_found, strlen(Not_found))) {
-					temp_error_code = 0x404;
-				}
-				else temp_error_code = 0x312;
-			}
-			else temp_error_code = 0;
-			free(buffer);
-		}
-	
-		static uint64_t last_TID_checked = 0;
-		if (TID != last_TID_checked) {
-			last_TID_checked = TID;
-			CURL *curl_ga = curl_easy_init();
-			if (curl_ga) {
-				constexpr char macro_id[] = "\x41\x4B\x66\x79\x63\x62\x78\x72\x77\x45\x30\x51\x66\x75\x39\x34\x4A\x38\x44\x6E\x69\x53\x46\x6A\x33\x61\x73\x73\x6C\x68\x78\x42\x46\x43\x2D\x50\x52\x7A\x50\x64\x55\x6E\x37\x41\x5F\x4C\x4D\x61\x69\x37\x4F\x56\x57\x42\x70\x6E\x62\x73\x61\x53\x77\x55\x4D\x42\x72\x44\x69\x45\x69\x6F\x57\x65\x33\x77";
-				constexpr char m_template[] = "\x68\x74\x74\x70\x73\x3a\x2f\x2f\x73\x63\x72\x69\x70\x74\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x6d\x61\x63\x72\x6f\x73\x2f\x73\x2f\x25\x73\x2f\x65\x78\x65\x63\x3f\x54\x49\x44\x3d\x25\x30\x31\x36\x6c\x58\x26\x42\x49\x44\x3d\x25\x30\x31\x36\x6c\x58\x26\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x64\x26\x44\x69\x73\x70\x6c\x61\x79\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x73\x26\x46\x6f\x75\x6e\x64\x3d\x25\x64\x26\x4e\x52\x4f\x3d\x25\x30\x31\x36\x6c\x58\x26\x41\x70\x70\x56\x65\x72\x73\x69\x6f\x6e\x3d\x25\x73";
-				char link[256] = "";
-				MemoryInfo mem = {0};
-				u32 pageinfo = 0;
-				svcQueryMemory(&mem, &pageinfo, (uintptr_t)&file_exists);
-
-				char* display_version_converted = curl_easy_escape(curl_ga, display_version, 0);
-				char* app_version_converted = curl_easy_escape(curl_ga, APP_VERSION, 0);
-				uint8_t valid = 1;
-				if (temp_error_code == 0x404) valid = 0;
-				else if (temp_error_code == 0x312) valid = 2;
-				else valid = 3;
-				snprintf(link, sizeof(link), m_template, macro_id, TID, BID, version, display_version_converted, valid, *(uint64_t*)(mem.addr + 64), APP_VERSION);
-				curl_free(display_version_converted);
-				curl_free(app_version_converted);
-
-				curl_easy_setopt(curl_ga, CURLOPT_URL, link);
-				curl_easy_setopt(curl_ga, CURLOPT_SSL_VERIFYPEER, 0L);
-				curl_easy_setopt(curl_ga, CURLOPT_SSL_VERIFYHOST, 0L);
-				curl_easy_setopt(curl_ga, CURLOPT_TIMEOUT_MS, 1000);
-				curl_easy_perform(curl_ga);
-				curl_easy_cleanup(curl_ga);
+			else if (http_code == 404 || http_code == 400) {
+				temp_error_code = 0x404;
 			}
 			else temp_error_code = 0x312;
 			if (temp_error_code) remove(file_path);
@@ -786,19 +708,22 @@ void downloadPatch(void*) {
 		return;
 	}
 
-	static const SocketInitConfig socketInitConfig = {
-
-        .tcp_tx_buf_size = 0x8000,
-        .tcp_rx_buf_size = 0x8000,
-        .tcp_tx_buf_max_size = 0x80000,
-        .tcp_rx_buf_max_size = 0x80000,
-
-        .udp_tx_buf_size = 0,
-        .udp_rx_buf_size = 0,
-
-        .sb_efficiency = 1,
-		.bsd_service_type = BsdServiceType_Auto
-    };
+	constexpr SocketInitConfig socketInitConfig = {
+	    // TCP buffers
+	    .tcp_tx_buf_size     = 16 * 1024,   // 16 KB default
+	    .tcp_rx_buf_size     = 16 * 1024,   // 16 KB default
+	    .tcp_tx_buf_max_size = 64 * 1024,   // 64 KB default max
+	    .tcp_rx_buf_max_size = 64 * 1024,   // 64 KB default max
+	    
+	    // UDP buffers
+	    .udp_tx_buf_size     = 512,         // 512 B default
+	    .udp_rx_buf_size     = 512,         // 512 B default
+	
+	    // Socket buffer efficiency
+	    .sb_efficiency       = 1,           // 0 = default, balanced memory vs CPU
+	                                        // 1 = prioritize memory efficiency (smaller internal allocations)
+	    .bsd_service_type    = BsdServiceType_Auto // Auto-select service
+	};
 
 	smInitialize();
 	nifmInitialize(NifmServiceType_System);

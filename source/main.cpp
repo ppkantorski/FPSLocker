@@ -47,7 +47,6 @@ public:
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		auto *clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_DeleteSettings));
 		clickableListItem->setClickListener([this](u64 keys) { 
@@ -156,7 +155,6 @@ public:
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		if (oldSalty || !SaltySD) {
 			list->addItem(new tsl::elm::CustomDrawer([](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
@@ -239,7 +237,6 @@ public:
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 			if (!SaltySD) {
@@ -345,7 +342,6 @@ public:
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 			for (uint8_t i = 0; i < sizeofAllowedFPSTargets; i += 1) {
@@ -515,7 +511,6 @@ public:
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
-		list->disableCaching();
 		
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 			if (!SaltySD) {
