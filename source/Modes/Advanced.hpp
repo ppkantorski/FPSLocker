@@ -175,8 +175,10 @@ public:
 class AdvancedGui : public tsl::Gui {
 public:
 	bool exitPossible = true;
+	char progressBar[5];
     AdvancedGui() {
 		patchChar[0] = 0;
+		progressBar[0] = 0;
 		configValid = LOCK::readConfig(configPath);
 		if (R_FAILED(configValid)) {
 			if (configValid == 0x202) {
@@ -358,6 +360,7 @@ public:
 			if ((keys & HidNpadButton_A) && PluginRunning && exitPossible) {
 				exitPossible = false;
 				sprintf(patchChar, getStringID(Lang::Id_CheckingWarehouseForConfig));
+				
 				threadCreate(&t1, downloadPatch, NULL, NULL, 0x20000, 0x3F, 3);
 				threadStart(&t1);
 				return true;
@@ -433,10 +436,31 @@ public:
 				threadWaitForExit(&t1);
 				threadClose(&t1);
 				exitPossible = true;
+				atomic_store(&cancel_flag, 0);
 				error_code = UINT32_MAX;
 			}
-			if (rc == 0x316) {
-				sprintf(patchChar, getStringID(Lang::Id_ConnectionTimeout));
+			tsl::goBack();
+			return true;
+		}
+		Result rc = error_code;
+		if (rc != UINT32_MAX && rc != 0x404) {
+			threadWaitForExit(&t1);
+			threadClose(&t1);
+			exitPossible = true;
+			error_code = UINT32_MAX;
+			progressBar[0] = 0;
+		}
+		if (rc == 0x316) {
+			strcpy(patchChar, getStringID(Lang::Id_ConnectionTimeout));
+		}
+		else if (rc == 0x212 || rc == 0x312) {
+			sprintf(patchChar, getStringID(Lang::Id_ConfigIsNotAvailableRC), rc);
+		}
+		else if (rc == 0x404) {
+			if (data_to_download != 0) {
+				strcpy(patchChar, getStringID(Lang::Id_ConfigIsNotAvailableExitNotPossibleUntilFinished));
+				snprintf(progressBar, sizeof(progressBar), "%lu%%", (size_t)(data_downloaded * 100) / data_to_download);
+
 			}
 			else if (rc == 0x212 || rc == 0x312) {
 				sprintf(patchChar, getStringID(Lang::Id_ConfigIsNotAvailableRC), rc);
@@ -487,6 +511,12 @@ public:
 			else if (rc != UINT32_MAX) {
 				sprintf(patchChar, getStringID(Lang::Id_ConnectionErrorRC), rc);
 			}
+			tsl::goBack();
+			tsl::changeTo<AdvancedGui>();
+			return true;
+		}
+		else if (rc != UINT32_MAX) {
+			sprintf(patchChar, getStringID(Lang::Id_ConnectionErrorRC), rc);
 		}
         return false;   // Return true here to signal the inputs have been consumed
     }
