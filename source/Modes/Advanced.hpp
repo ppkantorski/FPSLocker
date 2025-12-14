@@ -4,6 +4,9 @@ public:
 
     virtual tsl::elm::Element* createUI() override {
 		auto frame = new tsl::elm::OverlayFrame(getStringID(Lang::Id_SetBuffering), " ");
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -119,6 +122,9 @@ public:
 
     virtual tsl::elm::Element* createUI() override {
         auto frame = new tsl::elm::OverlayFrame(getStringID(Lang::Id_NVNWindowSyncWait), getStringID(Lang::Id_Mode));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -227,6 +233,9 @@ public:
 
     virtual tsl::elm::Element* createUI() override {
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_AdvancedSettings));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -295,7 +304,7 @@ public:
 		list->addItem(new tsl::elm::CategoryHeader(getStringID(Lang::Id_FPSLockerPatches), false));
 
 		if (R_FAILED(configValid)) {
-			base_height = 154;
+			base_height = 132;
 		}
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {

@@ -19,6 +19,9 @@ public:
 
     virtual tsl::elm::Element* createUI() override {
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_FrameskipTester));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -95,6 +98,9 @@ public:
 
     virtual tsl::elm::Element* createUI() override {
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplayUnderclockWizard));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -140,6 +146,7 @@ public:
 				SaltySD_Term();
 			}
 			tsl::goBack();
+			triggerExitFeedback();
 			return true;
 		}
 		s32 width = 0;
@@ -274,6 +281,9 @@ public:
 
     virtual tsl::elm::Element* createUI() override {
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplayOverclockWizard));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -319,6 +329,7 @@ public:
 				SaltySD_Term();
 			}
 			tsl::goBack();
+			triggerExitFeedback();
 			return true;
 		}
 		s32 width = 0;
@@ -359,8 +370,8 @@ public:
 					SaltySD_Term();
 				}
 				SaveDockedModeAllowedSave(rr, as, height == 720);
-				tsl::goBack();
-				tsl::changeTo<DockedManualGui>(m_maxRefreshRate);
+				//tsl::goBack();
+				tsl::swapTo<DockedManualGui>(m_maxRefreshRate);
 				return true;
 			}
 			if (svcGetSystemTick() - tick < (delay_s * systemtickfrequency)) {
@@ -445,6 +456,9 @@ public:
 		char string_temp[128];
 		snprintf(string_temp, sizeof(string_temp), getStringID(Lang::Id_DockedDisplayManualSettings), height);
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", string_temp);
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -505,6 +519,7 @@ public:
 				SaltySD_Term();
 			}
 			tsl::goBack();
+			triggerExitFeedback();
 			return true;
 		}
 		return false;   // Return true here to singal the inputs have been consumed
@@ -525,6 +540,9 @@ public:
 
     virtual tsl::elm::Element* createUI() override {
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DockedDisplayAdditionalSettings));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -642,6 +660,9 @@ public:
 
     virtual tsl::elm::Element* createUI() override {
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DockedDisplaySettings));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -770,6 +791,9 @@ public:
 		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
 		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
 		auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_ChangeRefreshRate));
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -856,6 +880,9 @@ public:
 
     virtual tsl::elm::Element* createUI() override {
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplaySettings));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -1069,8 +1096,8 @@ public:
 				apmExit();
 				if (mode != entry_mode) {
 					smExit();
-					tsl::goBack();
-					tsl::changeTo<DisplayGui>();
+					//tsl::goBack();
+					tsl::swapTo<DisplayGui>();
 					return true;
 				}
 			}
@@ -1091,6 +1118,9 @@ public:
 
     virtual tsl::elm::Element* createUI() override {
         auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplaySettingsWarning));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		auto list = new tsl::elm::List();
 
