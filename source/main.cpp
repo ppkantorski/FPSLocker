@@ -44,9 +44,9 @@ public:
 		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
 		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
 		auto frame = new tsl::elm::OverlayFrame(_titleidc, _titleName);
-		#if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
+		//#if USING_WIDGET_DIRECTIVE
+        //frame->m_showWidget = true;
+        //#endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
