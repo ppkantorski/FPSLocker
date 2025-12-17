@@ -208,9 +208,10 @@ void getDockedHighestRefreshRate(uint8_t* highestRefreshRate, uint8_t* setLinkRa
 
 void LoadDockedModeAllowedSave(DockedModeRefreshRateAllowed &rr, DockedAdditionalSettings &as, int* displayCRC, bool is720p) {
 	// Initialize refresh rates
-	for (size_t i = 0; i < sizeof(DockedModeRefreshRateAllowed); i++) {
-		rr[i] = (DockedModeRefreshRateAllowedValues[i] == 60 || DockedModeRefreshRateAllowedValues[i] == 50);
-	}
+    for (size_t i = 0; i < sizeof(DockedModeRefreshRateAllowed); i++) {
+        if (DockedModeRefreshRateAllowedValues[i] == 60 || DockedModeRefreshRateAllowedValues[i] == 50) rr[i] = true;
+        else rr[i] = false;
+    }
 	
 	// Initialize additional settings
 	as.dontForce60InDocked = false;
@@ -714,8 +715,8 @@ void downloadPatch(void*) {
 	    // TCP buffers
 	    .tcp_tx_buf_size     = 16 * 1024,   // 16 KB default
 	    .tcp_rx_buf_size     = 16 * 1024,   // 16 KB default
-	    .tcp_tx_buf_max_size = 64 * 1024,   // 64 KB default max
-	    .tcp_rx_buf_max_size = 64 * 1024,   // 64 KB default max
+	    .tcp_tx_buf_max_size = 32 * 1024,   // 64 KB default max
+	    .tcp_rx_buf_max_size = 32 * 1024,   // 64 KB default max
 	    
 	    // UDP buffers
 	    .udp_tx_buf_size     = 512,         // 512 B default
