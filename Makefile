@@ -38,7 +38,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #   NACP building is skipped as well.
 #---------------------------------------------------------------------------------
 APP_TITLE	:=	FPSLocker
-APP_VERSION	:=	3.2.1+r1
+APP_VERSION	:=	3.2.1+r2
 
 TARGET		:=	FPSLocker
 BUILD		:=	build
