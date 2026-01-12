@@ -681,8 +681,9 @@ public:
 			char string_temp[128];
 			snprintf(string_temp, sizeof(string_temp), getStringID(Lang::Id_AllowedRefreshRates), height);
 			auto* clickableListItem1 = new tsl::elm::ListItem(string_temp);
-			clickableListItem1->setClickListener([this](u64 keys) { 
+			clickableListItem1->setClickListener([this, clickableListItem1](u64 keys) { 
 				if ((keys & HidNpadButton_A) && !block) {
+					tsl::shiftItemFocus(clickableListItem1);
 					tsl::changeTo<DockedManualGui>(highestRefreshRate);
 					return true;
 				}
@@ -692,8 +693,9 @@ public:
 			list->addItem(clickableListItem1);
 
 			auto* clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_DisplayUnderclockWizard));
-			clickableListItem->setClickListener([this](u64 keys) { 
+			clickableListItem->setClickListener([this, clickableListItem](u64 keys) { 
 				if ((keys & HidNpadButton_A) && !block) {
+					tsl::shiftItemFocus(clickableListItem);
 					tsl::changeTo<DockedWizardGui>(highestRefreshRate);
 					return true;
 				}
@@ -706,8 +708,9 @@ public:
 				char string_temp[128];
 				snprintf(string_temp, sizeof(string_temp), getStringID(Lang::Id_pOverclockWizard), height);
 				auto* clickableListItem2 = new tsl::elm::ListItem(string_temp);
-				clickableListItem2->setClickListener([this](u64 keys) {
+				clickableListItem2->setClickListener([this, clickableListItem2](u64 keys) {
 					if ((keys & HidNpadButton_A) && !block) {
+						tsl::shiftItemFocus(clickableListItem2);
 						tsl::changeTo<DockedOverWizardGui>(highestRefreshRate);
 						return true;
 					}
@@ -718,8 +721,9 @@ public:
 			}
 
 			auto* clickableListItem4 = new tsl::elm::ListItem(getStringID(Lang::Id_AdditionalSettings));
-			clickableListItem4->setClickListener([this](u64 keys) { 
+			clickableListItem4->setClickListener([this, clickableListItem4](u64 keys) { 
 				if ((keys & HidNpadButton_A) && !block) {
+					tsl::shiftItemFocus(clickableListItem4);
 					tsl::changeTo<DockedAdditionalGui>();
 					return true;
 				}
@@ -730,8 +734,9 @@ public:
 		}
 
 		auto* clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_FrameskipTester));
-		clickableListItem3->setClickListener([this](u64 keys) { 
+		clickableListItem3->setClickListener([this, clickableListItem3](u64 keys) { 
 			if ((keys & HidNpadButton_A)) {
+				tsl::shiftItemFocus(clickableListItem3);
 				tsl::changeTo<DockedFrameskipGui>();
 				return true;
 			}
@@ -931,8 +936,9 @@ public:
 		}
 		else if (entry_mode == ApmPerformanceMode_Boost && displaySync.ds.docked) {
 			auto* clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_ChangeRefreshRate)); //Change refresh rate
-			clickableListItem->setClickListener([](u64 keys) { 
+			clickableListItem->setClickListener([clickableListItem](u64 keys) { 
 				if (keys & HidNpadButton_A) {
+					tsl::shiftItemFocus(clickableListItem);
 					tsl::changeTo<DockedRefreshRateChangeGui>();
 					return true;
 				}
@@ -1028,8 +1034,9 @@ public:
 				list->addItem(clickableListItem6);
 			
 				auto* clickableListItem4 = new tsl::elm::ListItem(getStringID(Lang::Id_DockedSettings)); //Docked settings
-				clickableListItem4->setClickListener([this](u64 keys) { 
+				clickableListItem4->setClickListener([this, clickableListItem4](u64 keys) { 
 					if ((keys & HidNpadButton_A)) {
+						tsl::shiftItemFocus(clickableListItem4);
 						tsl::changeTo<DockedGui>();
 						return true;
 					}

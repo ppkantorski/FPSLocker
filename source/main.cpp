@@ -51,7 +51,7 @@ public:
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
 
-		auto *clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_DeleteSettings));
+		auto* clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_DeleteSettings));
 		clickableListItem->setClickListener([this](u64 keys) { 
 			if (keys & HidNpadButton_A) {
 				char path[512] = "";
@@ -82,7 +82,7 @@ public:
 
 		list->addItem(clickableListItem);
 
-		auto *clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_DeletePatches));
+		auto* clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_DeletePatches));
 		clickableListItem2->setClickListener([this](u64 keys) { 
 			if (keys & HidNpadButton_A) {
 				char folder[640] = "";
@@ -179,7 +179,7 @@ public:
 		if (R_FAILED(rc)) {
 			char error[24] = "";
 			sprintf(error, "Err: 0x%x", rc);
-			auto *clickableListItem2 = new tsl::elm::ListItem(error);
+			auto* clickableListItem2 = new tsl::elm::ListItem(error);
 			clickableListItem2->setClickListener([](u64 keys) { 
 				if (keys & HidNpadButton_A) {
 					return true;
@@ -192,9 +192,10 @@ public:
 		else {
     		list->addItem(new tsl::elm::CategoryHeader(getStringID(Lang::Id_GamesList)));
 
-			auto *clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_All));
-			clickableListItem3->setClickListener([](u64 keys) { 
+			auto* clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_All));
+			clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 				if (keys & HidNpadButton_A) {
+					tsl::shiftItemFocus(clickableListItem3);
 					tsl::changeTo<NoGameSub>(0x1234567890ABCDEF, getStringID(Lang::Id_Everything));
 					return true;
 				}
@@ -204,9 +205,10 @@ public:
 			list->addItem(clickableListItem3);
 			mutexLock(&TitlesAccess);
 			for (size_t i = 0; i < titles.size(); i++) {
-				auto *clickableListItem = new tsl::elm::ListItem(titles[i].TitleName);
-				clickableListItem->setClickListener([i](u64 keys) { 
+				auto* clickableListItem = new tsl::elm::ListItem(titles[i].TitleName);
+				clickableListItem->setClickListener([i, clickableListItem](u64 keys) { 
 					if (keys & HidNpadButton_A) {
+						tsl::shiftItemFocus(clickableListItem);
 						tsl::changeTo<NoGameSub>(titles[i].TitleID, titles[i].TitleName);
 						return true;
 					}
@@ -259,9 +261,10 @@ public:
 			}
 		}), 33);
 
-		auto *clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_GamesList));
-		clickableListItem2->setClickListener([this](u64 keys) { 
+		auto* clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_GamesList));
+		clickableListItem2->setClickListener([this, clickableListItem2](u64 keys) { 
 			if (keys & HidNpadButton_A) {
+				tsl::shiftItemFocus(clickableListItem2);
 				tsl::changeTo<NoGame2>(this -> rc, 2, true);
 				return true;
 			}
@@ -270,9 +273,10 @@ public:
 
 		list->addItem(clickableListItem2);
 
-		auto *clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_DisplaySettings), "\uE151");
-		clickableListItem3->setClickListener([](u64 keys) { 
+		auto* clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_DisplaySettings), "\uE151");
+		clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 			if (keys & HidNpadButton_A) {
+				tsl::shiftItemFocus(clickableListItem3);
 				tsl::changeTo<WarningDisplayGui>();
 				return true;
 			}
@@ -281,7 +285,7 @@ public:
 
 		list->addItem(clickableListItem3);
 
-		auto *clickableListItem4 = new tsl::elm::ToggleListItem(getStringID(Lang::Id_ForceEnglishLanguage), forceEnglishLanguage);
+		auto* clickableListItem4 = new tsl::elm::ToggleListItem(getStringID(Lang::Id_ForceEnglishLanguage), forceEnglishLanguage);
 		clickableListItem4->setClickListener([](u64 keys) { 
 			if (keys & HidNpadButton_A) {
 				setForceEnglishLanguage(!forceEnglishLanguage);
@@ -602,7 +606,7 @@ public:
 		if (PluginRunning && (Shared -> pluginActive)) {
 			pluginRanAtBoot = true;
 			if (entry_mode == ApmPerformanceMode_Normal) {
-				auto *clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_IncreaseFPSTarget));
+				auto* clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_IncreaseFPSTarget));
 				clickableListItem->setClickListener([](u64 keys) { 
 					if ((keys & HidNpadButton_A) && PluginRunning) {
 						if ((Shared -> FPSmode) == 2 && !(Shared -> FPSlocked)) {
@@ -652,7 +656,7 @@ public:
 
 				list->addItem(clickableListItem);
 				
-				auto *clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_DecreaseFPSTarget));
+				auto* clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_DecreaseFPSTarget));
 				clickableListItem2->setClickListener([](u64 keys) { 
 					if ((keys & HidNpadButton_A) && PluginRunning) {
 						if ((Shared -> FPSmode) < 2 && !(Shared -> FPSlocked)) {
@@ -702,9 +706,10 @@ public:
 				list->addItem(clickableListItem2);
 			}
 			else if (entry_mode == ApmPerformanceMode_Boost) {
-				auto *clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_ChangeFPSTarget));
-				clickableListItem2->setClickListener([](u64 keys) { 
+				auto* clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_ChangeFPSTarget));
+				clickableListItem2->setClickListener([clickableListItem2](u64 keys) { 
 					if ((keys & HidNpadButton_A) && PluginRunning) {
+						tsl::shiftItemFocus(clickableListItem2);
 						tsl::changeTo<DockedFPSTargetGui>();
 						return true;
 					}
@@ -713,7 +718,7 @@ public:
 				list->addItem(clickableListItem2);			
 			}
 
-			auto *clickableListItem4 = new tsl::elm::ListItem(getStringID(Lang::Id_DisableCustomFPSTarget));
+			auto* clickableListItem4 = new tsl::elm::ListItem(getStringID(Lang::Id_DisableCustomFPSTarget));
 			clickableListItem4->setClickListener([this](u64 keys) { 
 				if ((keys & HidNpadButton_A) && PluginRunning) {
 					if (entry_mode == ApmPerformanceMode_Normal && (Shared -> FPSlocked)) {
@@ -737,9 +742,10 @@ public:
 			});
 			list->addItem(clickableListItem4);
 
-			auto *clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_AdvancedSettings));
-			clickableListItem3->setClickListener([](u64 keys) { 
+			auto* clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_AdvancedSettings));
+			clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 				if ((keys & HidNpadButton_A) && PluginRunning) {
+					tsl::shiftItemFocus(clickableListItem3);
 					tsl::changeTo<AdvancedGui>();
 					return true;
 				}
@@ -749,9 +755,10 @@ public:
 		}
 
 		if (SaltySD) {
-			auto *clickableListItem6 = new tsl::elm::ListItem(getStringID(Lang::Id_DisplaySettings), "\uE151");
-			clickableListItem6->setClickListener([](u64 keys) { 
+			auto* clickableListItem6 = new tsl::elm::ListItem(getStringID(Lang::Id_DisplaySettings), "\uE151");
+			clickableListItem6->setClickListener([clickableListItem6](u64 keys) { 
 				if (keys & HidNpadButton_A) {
+					tsl::shiftItemFocus(clickableListItem6);
 					tsl::changeTo<WarningDisplayGui>();
 					return true;
 				}

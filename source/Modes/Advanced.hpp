@@ -253,8 +253,9 @@ public:
 
 					if ((Shared -> Buffers) == 2 || (Shared -> ActiveBuffers) == 2) {
 						auto *clickableListItem3 = new tsl::elm::MiniListItem(getStringID(Lang::Id_WindowSyncWait), ZeroSyncMode);
-						clickableListItem3->setClickListener([](u64 keys) { 
+						clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 							if ((keys & HidNpadButton_A) && PluginRunning) {
+								tsl::shiftItemFocus(clickableListItem3);
 								tsl::changeTo<SyncMode>();
 								return true;
 							}
@@ -264,8 +265,9 @@ public:
 					}
 					if ((Shared -> Buffers) > 2) {
 						auto *clickableListItem3 = new tsl::elm::MiniListItem(getStringID(Lang::Id_SetBuffering));
-						clickableListItem3->setClickListener([](u64 keys) { 
+						clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 							if ((keys & HidNpadButton_A) && PluginRunning) {
+								tsl::shiftItemFocus(clickableListItem3);
 								tsl::changeTo<SetBuffers>();
 								return true;
 							}
@@ -289,8 +291,9 @@ public:
 
 					if ((Shared -> Buffers) >= 2) {
 						auto *clickableListItem3 = new tsl::elm::MiniListItem(getStringID(Lang::Id_SetBuffering));
-						clickableListItem3->setClickListener([](u64 keys) { 
+						clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 							if ((keys & HidNpadButton_A) && PluginRunning) {
+								tsl::shiftItemFocus(clickableListItem3);
 								tsl::changeTo<SetBuffers>();
 								return true;
 							}
