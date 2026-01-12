@@ -91,17 +91,25 @@ namespace tsl {
 
 
             virtual bool onTouch(TouchEvent event, s32 currX, s32 currY, s32 prevX, s32 prevY, s32 initialX, s32 initialY) override {
-                if (event == TouchEvent::Touch)
+
+                static bool triggerOnce = true;
+                if (event == TouchEvent::Touch) {
                     this->m_touched = this->inBounds(currX, currY);
+                    if (triggerOnce) {
+                        triggerNavigationFeedback();
+                        triggerOnce = false;
+                    }
+                } else
+                    triggerOnce = false;
 
                 if (event == TouchEvent::Release && this->m_touched) {
                     this->m_touched = false;
 
                     if (Element::getInputMode() == InputMode::Touch) {
-                        bool handled = this->onClick(HidNpadButton_A);
+                        //bool handled = this->onClick(HidNpadButton_A);
 
                         this->m_clickAnimationProgress = 0;
-                        return handled;
+                        return this->onClick(HidNpadButton_A);
                     }
                 }
 
