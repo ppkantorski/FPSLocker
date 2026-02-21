@@ -1,4 +1,4 @@
-# FPSLocker (libultrahand)
+# FPSLocker (libultrahand build)
 
 An overlay that, with SaltyNX, allows you to set custom display refresh rate and FPS in Nintendo Switch retail games.
 
