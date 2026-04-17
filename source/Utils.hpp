@@ -1012,12 +1012,19 @@ std::string getAppName(uint64_t Tid)
 	if (hosversionBefore(19,0,0)) {
 		rc = nsGetApplicationControlData(NsApplicationControlSource::NsApplicationControlSource_Storage, Tid, appControlData, sizeof(NsApplicationControlData), nullptr);
 	}
+	//This is faster by 30% than function above on 19.0.0-20.5.0
 	else if (hosversionBefore(21,0,0)) {
 		rc = nsGetApplicationControlData2(NsApplicationControlSource::NsApplicationControlSource_Storage, Tid, appControlData, sizeof(NsApplicationControlData), 0xFF, 0, nullptr, nullptr);
 	}
-	else {
+	//This is faster by 10% than function above on 21.0.0-21.2.0
+	else if (hosversionBefore(22,0,0)) {
 		rc = nsGetApplicationControlData3(NsApplicationControlSource::NsApplicationControlSource_Storage, Tid, appControlData, sizeof(NsApplicationControlData), 0xFF, 0, nullptr);
 	}
+	//This is faster by 75% than function above on 22.0.0+
+	else {
+		rc = nsGetApplicationControlData2(NsApplicationControlSource::NsApplicationControlSource_Storage, Tid, appControlData, sizeof(NsApplicationControlData), 1, 0, nullptr, nullptr);
+	}
+	
 	if (R_FAILED(rc)) {
 		free(appControlData);
 		char returnTID[18];
@@ -1035,11 +1042,16 @@ std::string getAppName(uint64_t Tid)
 		}
 	}
 	
-	NacpLanguageEntry *languageEntry = nullptr;
-	smInitialize();
-	rc = nacpGetLanguageEntry((NacpStruct*)nacp, &languageEntry);
-	smExit();
-	if (R_FAILED(rc)) {
+	NacpLanguageEntry* languageEntry = &nacp->lang_data.lang[getNacpLanguage()];
+	if (languageEntry->name[0] == 0) {
+		for (size_t i = 0; i < 16; i++) {
+			if (nacp->lang_data.lang[i].name[0] != 0) {
+				languageEntry = &nacp->lang_data.lang[i];
+				break;
+			}
+		}
+	}
+	if (languageEntry->name[0] == 0) {
 		free(appControlData);
 		char returnTID[18];
 		sprintf(returnTID, "0x%X", rc);
@@ -1065,7 +1077,7 @@ Result getTitles(int32_t count)
 			title.TitleID = appRecords[i].application_id;
 			title.TitleName = getAppName(appRecords[i].application_id);
 			mutexLock(&TitlesAccess);
-			titles.push_back(title);
+			titles.emplace_back(title);
 			mutexUnlock(&TitlesAccess);
 		}
 	}

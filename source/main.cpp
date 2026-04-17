@@ -24,6 +24,25 @@ bool isLite = false;
 uint8_t refreshRate_g = 60;
 bool oldSalty = false;
 
+extern "C" {
+	//Linker tricks to make overlay smaller
+	void* __real___cxa_throw(void *thrown_exception, void *pvar, void (*dest)(void *));
+	void* __real__Unwind_Resume();
+	void* __real___gxx_personality_v0();
+
+	void __wrap___cxa_throw(void *thrown_exception, void *pvar, void (*dest)(void *)) {
+		abort();
+	}
+
+	void __wrap__Unwind_Resume() {
+		return;
+	}
+
+	void __wrap___gxx_personality_v0() {
+		return;
+	}
+}
+
 #include "Modes/Advanced.hpp"
 
 class NoGameSub : public tsl::Gui {
@@ -41,12 +60,6 @@ public:
 	// Called when this Gui gets loaded to create the UI
 	// Allocate all elements on the heap. libtesla will make sure to clean them up when not needed anymore
 	virtual tsl::elm::Element* createUI() override {
-		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
-		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
-		auto frame = new tsl::elm::OverlayFrame(_titleidc, _titleName);
-		//#if USING_WIDGET_DIRECTIVE
-        //frame->m_showWidget = true;
-        //#endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -135,6 +148,13 @@ public:
 
 		list->addItem(clickableListItem2);
 
+		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
+		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
+		auto frame = new tsl::elm::OverlayFrame(_titleidc, _titleName);
+		//#if USING_WIDGET_DIRECTIVE
+        //frame->m_showWidget = true;
+        //#endif
+
 		frame->setContent(list);
 
 		return frame;
@@ -152,12 +172,6 @@ public:
 	// Called when this Gui gets loaded to create the UI
 	// Allocate all elements on the heap. libtesla will make sure to clean them up when not needed anymore
 	virtual tsl::elm::Element* createUI() override {
-		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
-		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
-		auto frame = new tsl::elm::OverlayFrame("FPSLocker", APP_VERSION);
-		#if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -195,7 +209,7 @@ public:
 			auto* clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_All));
 			clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 				if (keys & HidNpadButton_A) {
-					tsl::shiftItemFocus(clickableListItem3);
+					//tsl::shiftItemFocus(clickableListItem3);
 					tsl::changeTo<NoGameSub>(0x1234567890ABCDEF, getStringID(Lang::Id_Everything));
 					return true;
 				}
@@ -208,7 +222,7 @@ public:
 				auto* clickableListItem = new tsl::elm::ListItem(titles[i].TitleName);
 				clickableListItem->setClickListener([i, clickableListItem](u64 keys) { 
 					if (keys & HidNpadButton_A) {
-						tsl::shiftItemFocus(clickableListItem);
+						//tsl::shiftItemFocus(clickableListItem);
 						tsl::changeTo<NoGameSub>(titles[i].TitleID, titles[i].TitleName);
 						return true;
 					}
@@ -219,6 +233,13 @@ public:
 			}
 			mutexUnlock(&TitlesAccess);
 		}
+
+		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
+		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
+		auto frame = new tsl::elm::OverlayFrame("FPSLocker", APP_VERSION);
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		frame->setContent(list);
 
@@ -239,12 +260,6 @@ public:
 	// Called when this Gui gets loaded to create the UI
 	// Allocate all elements on the heap. libtesla will make sure to clean them up when not needed anymore
 	virtual tsl::elm::Element* createUI() override {
-		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
-		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
-		auto frame = new tsl::elm::OverlayFrame("FPSLocker", APP_VERSION);
-		#if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -264,7 +279,7 @@ public:
 		auto* clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_GamesList));
 		clickableListItem2->setClickListener([this, clickableListItem2](u64 keys) { 
 			if (keys & HidNpadButton_A) {
-				tsl::shiftItemFocus(clickableListItem2);
+				//tsl::shiftItemFocus(clickableListItem2);
 				tsl::changeTo<NoGame2>(this -> rc, 2, true);
 				return true;
 			}
@@ -276,7 +291,7 @@ public:
 		auto* clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_DisplaySettings), "\uE151");
 		clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 			if (keys & HidNpadButton_A) {
-				tsl::shiftItemFocus(clickableListItem3);
+				//tsl::shiftItemFocus(clickableListItem3);
 				tsl::changeTo<WarningDisplayGui>();
 				return true;
 			}
@@ -298,6 +313,12 @@ public:
 
 		list->addItem(clickableListItem4);
 
+		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
+		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
+		auto frame = new tsl::elm::OverlayFrame("FPSLocker", APP_VERSION);
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		frame->setContent(list);
 
@@ -350,12 +371,6 @@ public:
 	// Called when this Gui gets loaded to create the UI
 	// Allocate all elements on the heap. libtesla will make sure to clean them up when not needed anymore
 	virtual tsl::elm::Element* createUI() override {
-		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
-		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
-		auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(9));
-		#if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -382,6 +397,14 @@ public:
 				renderer->drawString(FPS, false, x+((80 * (i % 4)) + 20), y+((80*(i / 4))+50), 40, (0xFFFF));
 			}
 		}), 480);
+
+
+		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
+		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
+		auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(9));
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		frame->setContent(list);
 
@@ -423,8 +446,7 @@ public:
 			if (selected != lastSelected) 
 				triggerNavigationFeedback();
 			else {
-				triggerRumbleClick.store(true, std::memory_order_release);
-				triggerWallSound.store(true, std::memory_order_release);
+				triggerWallFeedback();
 			}
 			lastSelected = selected;
 			return true;
@@ -439,8 +461,7 @@ public:
 			if (selected != lastSelected) 
 				triggerNavigationFeedback();
 			else {
-				triggerRumbleClick.store(true, std::memory_order_release);
-				triggerWallSound.store(true, std::memory_order_release);
+				triggerWallFeedback();
 			}
 			lastSelected = selected;
 			return true;
@@ -457,8 +478,7 @@ public:
 			if (selected != lastSelected) 
 				triggerNavigationFeedback();
 			else {
-				triggerRumbleClick.store(true, std::memory_order_release);
-				triggerWallSound.store(true, std::memory_order_release);
+				triggerWallFeedback();
 			}
 			lastSelected = selected;
 			return true;
@@ -475,8 +495,7 @@ public:
 			if (selected != lastSelected) 
 				triggerNavigationFeedback();
 			else {
-				triggerRumbleClick.store(true, std::memory_order_release);
-				triggerWallSound.store(true, std::memory_order_release);
+				triggerWallFeedback();
 			}
 			lastSelected = selected;
 			return true;
@@ -558,12 +577,6 @@ public:
 	// Called when this Gui gets loaded to create the UI
 	// Allocate all elements on the heap. libtesla will make sure to clean them up when not needed anymore
 	virtual tsl::elm::Element* createUI() override {
-		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
-		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
-		auto frame = new tsl::elm::OverlayFrame("FPSLocker", APP_VERSION);
-		#if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -710,7 +723,7 @@ public:
 				auto* clickableListItem2 = new tsl::elm::ListItem(getStringID(Lang::Id_ChangeFPSTarget));
 				clickableListItem2->setClickListener([clickableListItem2](u64 keys) { 
 					if ((keys & HidNpadButton_A) && PluginRunning) {
-						tsl::shiftItemFocus(clickableListItem2);
+						//tsl::shiftItemFocus(clickableListItem2);
 						tsl::changeTo<DockedFPSTargetGui>();
 						return true;
 					}
@@ -746,7 +759,7 @@ public:
 			auto* clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_AdvancedSettings));
 			clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 				if ((keys & HidNpadButton_A) && PluginRunning) {
-					tsl::shiftItemFocus(clickableListItem3);
+					//tsl::shiftItemFocus(clickableListItem3);
 					tsl::changeTo<AdvancedGui>();
 					return true;
 				}
@@ -759,7 +772,7 @@ public:
 			auto* clickableListItem6 = new tsl::elm::ListItem(getStringID(Lang::Id_DisplaySettings), "\uE151");
 			clickableListItem6->setClickListener([clickableListItem6](u64 keys) { 
 				if (keys & HidNpadButton_A) {
-					tsl::shiftItemFocus(clickableListItem6);
+					//tsl::shiftItemFocus(clickableListItem6);
 					tsl::changeTo<WarningDisplayGui>();
 					return true;
 				}
@@ -767,6 +780,13 @@ public:
 			});
 			list->addItem(clickableListItem6);
 		}
+
+		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
+		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
+		auto frame = new tsl::elm::OverlayFrame("FPSLocker", APP_VERSION);
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		// Add the list to the frame for it to be drawn
 		frame->setContent(list);

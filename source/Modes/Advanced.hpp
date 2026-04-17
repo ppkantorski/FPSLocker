@@ -3,10 +3,6 @@ public:
     SetBuffers() {}
 
     virtual tsl::elm::Element* createUI() override {
-		auto frame = new tsl::elm::OverlayFrame(getStringID(Lang::Id_SetBuffering), " ");
-		#if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -110,6 +106,11 @@ public:
 			}
 		}
 
+		auto frame = new tsl::elm::OverlayFrame(getStringID(Lang::Id_SetBuffering), " ");
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
+
 		frame->setContent(list);
 
         return frame;
@@ -121,10 +122,6 @@ public:
     SyncMode() {}
 
     virtual tsl::elm::Element* createUI() override {
-        auto frame = new tsl::elm::OverlayFrame(getStringID(Lang::Id_NVNWindowSyncWait), getStringID(Lang::Id_Mode));
-        #if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -170,6 +167,11 @@ public:
 		});
 		list->addItem(clickableListItem3);
 		
+        auto frame = new tsl::elm::OverlayFrame(getStringID(Lang::Id_NVNWindowSyncWait), getStringID(Lang::Id_Mode));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
+
         frame->setContent(list);
 
         return frame;
@@ -233,10 +235,6 @@ public:
 	size_t base_height = 134;
 
     virtual tsl::elm::Element* createUI() override {
-        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_AdvancedSettings));
-        #if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -255,7 +253,7 @@ public:
 						auto *clickableListItem3 = new tsl::elm::MiniListItem(getStringID(Lang::Id_WindowSyncWait), ZeroSyncMode);
 						clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 							if ((keys & HidNpadButton_A) && PluginRunning) {
-								tsl::shiftItemFocus(clickableListItem3);
+								//tsl::shiftItemFocus(clickableListItem3);
 								tsl::changeTo<SyncMode>();
 								return true;
 							}
@@ -267,7 +265,7 @@ public:
 						auto *clickableListItem3 = new tsl::elm::MiniListItem(getStringID(Lang::Id_SetBuffering));
 						clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 							if ((keys & HidNpadButton_A) && PluginRunning) {
-								tsl::shiftItemFocus(clickableListItem3);
+								//tsl::shiftItemFocus(clickableListItem3);
 								tsl::changeTo<SetBuffers>();
 								return true;
 							}
@@ -293,7 +291,7 @@ public:
 						auto *clickableListItem3 = new tsl::elm::MiniListItem(getStringID(Lang::Id_SetBuffering));
 						clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
 							if ((keys & HidNpadButton_A) && PluginRunning) {
-								tsl::shiftItemFocus(clickableListItem3);
+								//tsl::shiftItemFocus(clickableListItem3);
 								tsl::changeTo<SetBuffers>();
 								return true;
 							}
@@ -402,6 +400,12 @@ public:
 		});
 		list->addItem(clickableListItem5);		
 
+
+        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_AdvancedSettings));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
+        
 		frame->setContent(list);
 
         return frame;

@@ -15,13 +15,10 @@ public:
         tick = 0;
 		block = false;
         state = false;
+		selectIsUsingFocusedColor = true; // ensure it thinks KEY_A is usable
 	}
 
     virtual tsl::elm::Element* createUI() override {
-        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_FrameskipTester));
-        #if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -40,13 +37,18 @@ public:
 			
 		}), height+40);		
 		
-		frame->setContent(list);
+        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_FrameskipTester));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
+		frame->setContent(list);
         return frame;
     }
 
 	// Called once every frame to handle inputs not handled by other UI elements
 	virtual bool handleInput(u64 keysDown, u64 keysHeld, const HidTouchState &touchPos, HidAnalogStickState joyStickPosLeft, HidAnalogStickState joyStickPosRight) override {
+		selectIsUsingFocusedColor = true; // ensure it thinks KEY_A is usable
         if (!state && (keysDown & HidNpadButton_A)) {
             state = true;
             return true;
@@ -97,10 +99,6 @@ public:
 	}
 
     virtual tsl::elm::Element* createUI() override {
-        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplayUnderclockWizard));
-        #if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -112,6 +110,11 @@ public:
 			
 		}), 200);		
 		
+        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplayUnderclockWizard));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
+
 		frame->setContent(list);
 
         return frame;
@@ -280,10 +283,6 @@ public:
 	}
 
     virtual tsl::elm::Element* createUI() override {
-        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplayOverclockWizard));
-        #if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -295,6 +294,11 @@ public:
 			
 		}), 270);		
 		
+        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplayOverclockWizard));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
+
 		frame->setContent(list);
 
         return frame;
@@ -455,10 +459,6 @@ public:
     virtual tsl::elm::Element* createUI() override {
 		char string_temp[128];
 		snprintf(string_temp, sizeof(string_temp), getStringID(Lang::Id_DockedDisplayManualSettings), height);
-        auto frame = new tsl::elm::OverlayFrame("FPSLocker", string_temp);
-        #if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -490,6 +490,11 @@ public:
 			list->addItem(clickableListItem);	
 		}
 		
+        auto frame = new tsl::elm::OverlayFrame("FPSLocker", string_temp);
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
+
 		frame->setContent(list);
 
         return frame;
@@ -539,10 +544,6 @@ public:
 	}
 
     virtual tsl::elm::Element* createUI() override {
-        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DockedDisplayAdditionalSettings));
-        #if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -594,6 +595,11 @@ public:
 
 		list->addItem(clickableListItem6);
 		
+        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DockedDisplayAdditionalSettings));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
+
 		frame->setContent(list);
 
         return frame;
@@ -660,10 +666,6 @@ public:
 	size_t base_height = 128;
 
     virtual tsl::elm::Element* createUI() override {
-        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DockedDisplaySettings));
-        #if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -695,7 +697,7 @@ public:
 			auto* clickableListItem1 = new tsl::elm::ListItem(string_temp);
 			clickableListItem1->setClickListener([this, clickableListItem1](u64 keys) { 
 				if ((keys & HidNpadButton_A) && !block) {
-					tsl::shiftItemFocus(clickableListItem1);
+					//tsl::shiftItemFocus(clickableListItem1);
 					tsl::changeTo<DockedManualGui>(highestRefreshRate);
 					return true;
 				}
@@ -707,7 +709,7 @@ public:
 			auto* clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_DisplayUnderclockWizard));
 			clickableListItem->setClickListener([this, clickableListItem](u64 keys) { 
 				if ((keys & HidNpadButton_A) && !block) {
-					tsl::shiftItemFocus(clickableListItem);
+					//tsl::shiftItemFocus(clickableListItem);
 					tsl::changeTo<DockedWizardGui>(highestRefreshRate);
 					return true;
 				}
@@ -722,7 +724,7 @@ public:
 				auto* clickableListItem2 = new tsl::elm::ListItem(string_temp);
 				clickableListItem2->setClickListener([this, clickableListItem2](u64 keys) {
 					if ((keys & HidNpadButton_A) && !block) {
-						tsl::shiftItemFocus(clickableListItem2);
+						//tsl::shiftItemFocus(clickableListItem2);
 						tsl::changeTo<DockedOverWizardGui>(highestRefreshRate);
 						return true;
 					}
@@ -735,7 +737,7 @@ public:
 			auto* clickableListItem4 = new tsl::elm::ListItem(getStringID(Lang::Id_AdditionalSettings));
 			clickableListItem4->setClickListener([this, clickableListItem4](u64 keys) { 
 				if ((keys & HidNpadButton_A) && !block) {
-					tsl::shiftItemFocus(clickableListItem4);
+					//tsl::shiftItemFocus(clickableListItem4);
 					tsl::changeTo<DockedAdditionalGui>();
 					return true;
 				}
@@ -748,7 +750,7 @@ public:
 		auto* clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_FrameskipTester));
 		clickableListItem3->setClickListener([this, clickableListItem3](u64 keys) { 
 			if ((keys & HidNpadButton_A)) {
-				tsl::shiftItemFocus(clickableListItem3);
+				//tsl::shiftItemFocus(clickableListItem3);
 				tsl::changeTo<DockedFrameskipGui>();
 				return true;
 			}
@@ -757,6 +759,11 @@ public:
 
 		list->addItem(clickableListItem3);
 		
+        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DockedDisplaySettings));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
+
 		frame->setContent(list);
 
         return frame;
@@ -807,12 +814,6 @@ public:
 	// Called when this Gui gets loaded to create the UI
 	// Allocate all elements on the heap. libtesla will make sure to clean them up when not needed anymore
 	virtual tsl::elm::Element* createUI() override {
-		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
-		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
-		auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_ChangeRefreshRate));
-		#if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		// A list that can contain sub elements and handles scrolling
 		auto list = new tsl::elm::List();
@@ -843,6 +844,13 @@ public:
 
 			list->addItem(clickableListItem);
 		}
+
+		// A OverlayFrame is the base element every overlay consists of. This will draw the default Title and Subtitle.
+		// If you need more information in the header or want to change it's look, use a HeaderOverlayFrame.
+		auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_ChangeRefreshRate));
+		#if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 
 		frame->setContent(list);
 
@@ -902,10 +910,6 @@ public:
 	size_t base_height = 128;
 
     virtual tsl::elm::Element* createUI() override {
-        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplaySettings));
-        #if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -956,7 +960,7 @@ public:
 			auto* clickableListItem = new tsl::elm::ListItem(getStringID(Lang::Id_ChangeRefreshRate)); //Change refresh rate
 			clickableListItem->setClickListener([this, clickableListItem](u64 keys) { 
 				if (keys & HidNpadButton_A) {
-					tsl::shiftItemFocus(clickableListItem);
+					//tsl::shiftItemFocus(clickableListItem);
 					tsl::changeTo<DockedRefreshRateChangeGui>(highestRefreshRate);
 					return true;
 				}
@@ -1054,7 +1058,7 @@ public:
 				auto* clickableListItem4 = new tsl::elm::ListItem(getStringID(Lang::Id_DockedSettings)); //Docked settings
 				clickableListItem4->setClickListener([this, clickableListItem4](u64 keys) { 
 					if ((keys & HidNpadButton_A)) {
-						tsl::shiftItemFocus(clickableListItem4);
+						//tsl::shiftItemFocus(clickableListItem4);
 						tsl::changeTo<DockedGui>();
 						return true;
 					}
@@ -1116,6 +1120,11 @@ public:
             jumpItemExactMatch.store(false, std::memory_order_release);
             //g_overlayFilename = "";
         }
+
+        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplaySettings));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 		
 		frame->setContent(list);
 
@@ -1158,10 +1167,6 @@ public:
 	size_t base_height = 128;
 
     virtual tsl::elm::Element* createUI() override {
-        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplaySettingsWarning));
-        #if USING_WIDGET_DIRECTIVE
-        frame->m_showWidget = true;
-        #endif
 
 		auto list = new tsl::elm::List();
 
@@ -1193,6 +1198,11 @@ public:
 		});
 
 		list->addItem(clickableListItem);
+		
+        auto frame = new tsl::elm::OverlayFrame("FPSLocker", getStringID(Lang::Id_DisplaySettingsWarning));
+        #if USING_WIDGET_DIRECTIVE
+        frame->m_showWidget = true;
+        #endif
 		
 		frame->setContent(list);
 
