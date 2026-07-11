@@ -24,7 +24,7 @@ public:
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
             if (!state) {
-                renderer->drawString(getStringID(Lang::Id_HowToUseIt), false, x, y+20, 20, (0xFFFF));
+                renderer->drawString(getStringID(Lang::Id_HowToUseIt), false, x+7, y+20, 20, (0xFFFF));
             }
 			else if (!block) {
 				renderer->fillScreen(0xF000);
@@ -32,7 +32,7 @@ public:
 				renderer->drawString(getStringID(Lang::Id_PressToExit), false, x+20, y+height+20, 20, (0xFFFF));
 			}
 			else {
-				renderer->drawString(getStringID(Lang::Id_RenderingTakesTooLong), false, x, y+20, 20, (0xFFFF));
+				renderer->drawString(getStringID(Lang::Id_RenderingTakesTooLong), false, x+7, y+20, 20, (0xFFFF));
 			}
 			
 		}), height+40);		
@@ -104,9 +104,9 @@ public:
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
-			renderer->drawString(Docked_c.c_str(), false, x, y+20, 20, (0xFFFF));
+			renderer->drawString(Docked_c.c_str(), false, x+7, y+20, 20, (0xFFFF));
 
-			renderer->drawString(PressButton, false, x, y+160, 20, (0xFFFF));
+			renderer->drawString(PressButton, false, x+7, y+160, 20, (0xFFFF));
 			
 		}), 200);		
 		
@@ -288,9 +288,9 @@ public:
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
-			renderer->drawString(Docked_c, false, x, y+20, 20, (0xFFFF));
+			renderer->drawString(Docked_c, false, x+7, y+20, 20, (0xFFFF));
 
-			renderer->drawString(PressButton, false, x, y+260, 20, (0xFFFF));
+			renderer->drawString(PressButton, false, x+7, y+260, 20, (0xFFFF));
 			
 		}), 270);		
 		
@@ -672,19 +672,19 @@ public:
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
 			const u32 fontsize = 20;
-			renderer->drawString(Docked_c, false, x, y+fontsize, fontsize, 0xFFFF);
+			renderer->drawString(Docked_c, false, x+7, y+fontsize, fontsize, 0xFFFF);
 			const char* start = strchr(Docked_c, '\n') + 1;
 			const char* end = strchr(start, '\n');
 			std::string second_line(start, end - start);
-			auto string_width = renderer->drawString(second_line.c_str(), false, x, y+fontsize, fontsize, 0x0000).first;
+			auto string_width = renderer->drawString(second_line.c_str(), false, x+7, y+fontsize, fontsize, 0x0000).first;
 			if (!block) {
 				if (laneCount == 2 || laneCount == 4) {
-					if ((linkRate * laneCount) < 40) renderer->drawString("\uE14C", false, x+(fontsize/2)+string_width, y+(fontsize*2), fontsize, 0xF00F);
-					else renderer->drawString("\uE14B", false, x+(fontsize/2)+string_width, y+(fontsize*2), fontsize, 0xF0F0);
+					if ((linkRate * laneCount) < 40) renderer->drawString("\uE14C", false, x+7+(fontsize/2)+string_width, y+(fontsize*2), fontsize, 0xF00F);
+					else renderer->drawString("\uE14B", false, x+7+(fontsize/2)+string_width, y+(fontsize*2), fontsize, 0xF0F0);
 				}
 				else {
-					if (linkRate < 20) renderer->drawString("\uE14C", false, x+(fontsize/2)+string_width, y+(fontsize*2), fontsize, 0xF00F);
-					else renderer->drawString("\uE14B", false, x+(fontsize/2)+string_width, y+(fontsize*2), fontsize, 0xF0F0);
+					if (linkRate < 20) renderer->drawString("\uE14C", false, x+7+(fontsize/2)+string_width, y+(fontsize*2), fontsize, 0xF00F);
+					else renderer->drawString("\uE14B", false, x+7+(fontsize/2)+string_width, y+(fontsize*2), fontsize, 0xF0F0);
 				}
 			}
 
@@ -915,7 +915,7 @@ public:
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 
-			renderer->drawString(refreshRate_c, false, x, y+20, 20, (0xFFFF));
+			renderer->drawString(refreshRate_c, false, x+7, y+20, 20, (0xFFFF));
 
 		}), 90);
 
@@ -1173,7 +1173,7 @@ public:
 		auto how_many_lines = 1 + std::ranges::count(Warning, '\n');
 
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
-			renderer->drawString(Warning.c_str(), false, x, y+20+1, 20, (0xFFFF));
+			renderer->drawString(Warning.c_str(), false, x+7, y+20+1, 20, (0xFFFF));
 		}), 10 + (how_many_lines * 20) + 8);
 
 		auto* clickableListItem1 = new tsl::elm::ListItem(getStringID(Lang::Id_Decline));

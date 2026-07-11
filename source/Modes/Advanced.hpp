@@ -245,7 +245,7 @@ public:
 					
 					list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 						
-						renderer->drawString(nvnBuffers, false, x, y+20, 20, (0xFFFF));
+						renderer->drawString(nvnBuffers, false, x+7, y+20, 20, (0xFFFF));
 							
 					}), 60);
 
@@ -283,7 +283,7 @@ public:
 
 					list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 						
-						renderer->drawString(nvnBuffers, false, x, y+20, 20, (0xFFFF));
+						renderer->drawString(nvnBuffers, false, x+7, y+20, 20, (0xFFFF));
 							
 					}), 40);
 
@@ -313,25 +313,25 @@ public:
 			
 			if (R_SUCCEEDED(configValid)) {
 				
-				renderer->drawString(getStringID(Lang::Id_FoundValidConfigFile), false, x, y+20, 20, (0xFFFF));
-				renderer->drawString(patchAppliedChar, false, x, y+40, 20, (0xFFFF));
+				renderer->drawString(getStringID(Lang::Id_FoundValidConfigFile), false, x+7, y+20, 20, (0xFFFF));
+				renderer->drawString(patchAppliedChar, false, x+7, y+40, 20, (0xFFFF));
 				if (R_FAILED(patchValid)) {
-					renderer->drawString(patchChar, false, x, y+64, 20, (0xF99F));
+					renderer->drawString(patchChar, false, x+7, y+64, 20, (0xF99F));
 				}
-				else renderer->drawString(patchChar, false, x, y+64, 20, (0xFFFF));
+				else renderer->drawString(patchChar, false, x+7, y+64, 20, (0xFFFF));
 				if (progressBar[0] != 0) {
 					renderer->drawString(progressBar, false, x+300, y+(base_height), 20, (0xF99F));
 				}
 			}
 			else {
-				renderer->drawString(lockInvalid, false, x, y+20, 20, (0xFFFF));
+				renderer->drawString(lockInvalid, false, x+7, y+20, 20, (0xFFFF));
 				if (patchChar[0] != 0) {
-					renderer->drawString(patchChar, false, x, y+84, 20, (0xF99F));
+					renderer->drawString(patchChar, false, x+7, y+84, 20, (0xF99F));
 					if (progressBar[0] != 0) {
 						renderer->drawString(progressBar, false, x+300, y+(base_height), 20, (0xF99F));
 					}
 				}
-				else renderer->drawString(lockVersionExpected, false, x, y+84, 20, (0xFFFF));
+				else renderer->drawString(lockVersionExpected, false, x+7, y+84, 20, (0xFFFF));
 			}
 				
 
