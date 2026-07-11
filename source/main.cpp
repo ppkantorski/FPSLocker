@@ -179,13 +179,13 @@ public:
 		if (oldSalty || !SaltySD) {
 			list->addItem(new tsl::elm::CustomDrawer([](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 				if (!SaltySD) {
-					renderer->drawString(getStringID(Lang::Id_SaltyNXIsNotWorking), false, x, y+20, 20, (0xF33F));
+					renderer->drawString(getStringID(Lang::Id_SaltyNXIsNotWorking), false, x+7, y+20, 20, (0xF33F));
 				}
 				else if (!plugin) {
-					renderer->drawString(getStringID(Lang::Id_CantDetectNXFPSPluginOnSdcard), false, x, y+20, 20, (0xF33F));
+					renderer->drawString(getStringID(Lang::Id_CantDetectNXFPSPluginOnSdcard), false, x+7, y+20, 20, (0xF33F));
 				}
 				else if (!check) {
-					renderer->drawString(getStringID(Lang::Id_GameIsNotRunning), false, x, y+20, 19, (0xF33F));
+					renderer->drawString(getStringID(Lang::Id_GameIsNotRunning), false, x+7, y+20, 19, (0xF33F));
 				}
 			}), 30);
 		}
@@ -266,13 +266,13 @@ public:
 
 		list->addItem(new tsl::elm::CustomDrawer([](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 			if (!SaltySD) {
-				renderer->drawString(getStringID(Lang::Id_SaltyNXIsNotWorking), false, x, y+20, 20, (0xF33F));
+				renderer->drawString(getStringID(Lang::Id_SaltyNXIsNotWorking), false, x+7, y+20, 20, (0xF33F));
 			}
 			else if (!plugin) {
-				renderer->drawString(getStringID(Lang::Id_CantDetectNXFPSPluginOnSdcard), false, x, y+20, 20, (0xF33F));
+				renderer->drawString(getStringID(Lang::Id_CantDetectNXFPSPluginOnSdcard), false, x+7, y+20, 20, (0xF33F));
 			}
 			else if (!check) {
-				renderer->drawString(getStringID(Lang::Id_GameIsNotRunning), false, x, y+20, 19, (0xF33F));
+				renderer->drawString(getStringID(Lang::Id_GameIsNotRunning), false, x+7, y+20, 19, (0xF33F));
 			}
 		}), 33);
 
@@ -583,39 +583,46 @@ public:
 		
 		list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
 			if (!SaltySD) {
-				renderer->drawString(getStringID(Lang::Id_SaltyNXIsNotWorking), false, x, y+50, 20, (0xF33F));
+				renderer->drawString(getStringID(Lang::Id_SaltyNXIsNotWorking), false, x+7, y+50, 20, (0xF33F));
 			}
 			else if (!plugin) {
-				renderer->drawString(getStringID(Lang::Id_CantDetectNXFPSPluginOnSdcard), false, x, y+50, 20, (0xF33F));
+				renderer->drawString(getStringID(Lang::Id_CantDetectNXFPSPluginOnSdcard), false, x+7, y+50, 20, (0xF33F));
 			}
 			else if (!check) {
 				if (closed) {
-					renderer->drawString(getStringID(Lang::Id_GameWasClosedOverlayDisabled), false, x, y+20, 19, (0xF33F));
-					renderer->drawString(getStringID(Lang::Id_RestartOverlayToCheckAgain), false, x, y+70, 20, (0xFFFF));
+					renderer->drawString(getStringID(Lang::Id_GameWasClosedOverlayDisabled), false, x+7, y+20, 19, (0xF33F));
+					renderer->drawString(getStringID(Lang::Id_RestartOverlayToCheckAgain), false, x+7, y+70, 20, (0xFFFF));
 				}
 				else {
-					renderer->drawString(getStringID(Lang::Id_GameIsNotRunningOverlayDisabled), false, x, y+20, 19, (0xF33F));
+					renderer->drawString(getStringID(Lang::Id_GameIsNotRunningOverlayDisabled), false, x+7, y+20, 19, (0xF33F));
 				}
 			}
 			else if (!PluginRunning) {
-				renderer->drawString(getStringID(Lang::Id_GameIsRunning), false, x, y+20, 20, (0xFFFF));
-				renderer->drawString(getStringID(Lang::Id_NXFPSIsNotRunning), false, x, y+70, 20, (0xF33F));
+				renderer->drawString(getStringID(Lang::Id_GameIsRunning), false, x+7, y+20, 20, (0xFFFF));
+				renderer->drawString(getStringID(Lang::Id_NXFPSIsNotRunning), false, x+7, y+70, 20, (0xF33F));
 			}
 			else if (!(Shared -> pluginActive)) {
-				renderer->drawString(getStringID(Lang::Id_NXFPSIsRunningWaitingForFrame), false, x, y+20, 20, (0xF33F));
+				renderer->drawString(getStringID(Lang::Id_NXFPSIsRunningWaitingForFrame), false, x+7, y+20, 20, (0xF33F));
 			}
 			else {
-				renderer->drawString(getStringID(Lang::Id_NXFPSIsRunning), false, x, y+20, 20, (0xFFFF));
+				renderer->drawString(getStringID(Lang::Id_NXFPSIsRunning), false, x+7, y+20, 20, (0xFFFF));
 				if (((Shared -> API) > 0) && ((Shared -> API) <= 2))
-					renderer->drawString(FPSMode_c, false, x, y+43, 20, (0xFFFF));
-				renderer->drawString(FPSTarget_c, false, x, y+86, 20, (0xFFFF));
-				if (render100Above) renderer->drawString(PFPS_c, false, x+265, y+48, 50, (0xFFFF));
-				else renderer->drawString(PFPS_c, false, x+290, y+48, 50, (0xFFFF));
-				renderer->drawString("FPS", false, x+320, y+70, 20, (0xFFFF));
-				if (Shared -> forceOriginalRefreshRate) renderer->drawString(getStringID(Lang::Id_PatchIsNotForcing60Hz), false, x, y+129, 20, (0xF99F));
-				else if (noPatchDetectedButNeeded) renderer->drawString(getStringID(Lang::Id_PatchFileDoesntExist), false, x, y+129, 20, (0xF99F));
+					renderer->drawString(FPSMode_c, false, x+7, y+43, 20, (0xFFFF));
+				renderer->drawString(FPSTarget_c, false, x+7, y+86, 20, (0xFFFF));
+				// Right-align the FPS counter and its label with the right edge of the
+				// list-item separator lines (separators span x+7 .. x+w+8).
+				const s32 fpsRightEdge = x + w + 8;
+				const s32 pfpsWidth = renderer->getTextDimensions(PFPS_c, false, 50).first;
+				renderer->drawString(PFPS_c, false, fpsRightEdge - pfpsWidth, y+48, 50, (0xFFFF));
+				const s32 fpsLabelWidth = renderer->getTextDimensions("FPS", false, 20).first;
+				renderer->drawString("FPS", false, fpsRightEdge - fpsLabelWidth, y+70, 20, (0xFFFF));
+				if (Shared -> forceOriginalRefreshRate) renderer->drawString(getStringID(Lang::Id_PatchIsNotForcing60Hz), false, x+7, y+129, 20, (0xF99F));
+				else if (noPatchDetectedButNeeded) renderer->drawString(getStringID(Lang::Id_PatchFileDoesntExist), false, x+7, y+129, 20, (0xF99F));
 			}
-		}), 170);
+		// 150 instead of 170 when the FPS target items are shown, so they sit 20px
+		// higher; a 20px spacer below them restores the original position of the
+		// Advanced/Display settings items.
+		}), (PluginRunning && (Shared -> pluginActive)) ? 150 : 170);
 
 		if (PluginRunning && (Shared -> pluginActive)) {
 			pluginRanAtBoot = true;
@@ -755,6 +762,9 @@ public:
 				return false;
 			});
 			list->addItem(clickableListItem4);
+
+			list->addItem(new tsl::elm::CustomDrawer([this](tsl::gfx::Renderer *renderer, s32 x, s32 y, s32 w, s32 h) {
+			}), 20);
 
 			auto* clickableListItem3 = new tsl::elm::ListItem(getStringID(Lang::Id_AdvancedSettings));
 			clickableListItem3->setClickListener([clickableListItem3](u64 keys) { 
